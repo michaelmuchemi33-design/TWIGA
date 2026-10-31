@@ -1,0 +1,8 @@
+# fly launch --no-deploy -c bridge/fly.toml ; fly deploy -c bridge/fly.toml --dockerfile bridge/Dockerfile
+app = "twiga-bridge"
+primary_region = "jnb"
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"
+  min_machines_running = 1
