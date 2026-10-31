@@ -1,0 +1,7 @@
+{
+  "name": "twiga-web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": { "dev": "vite --host 0.0.0.0", "build": "vite", "preview": "vite preview --host 0.0.0.0" },
+  "dependencies": { "vite": "^6.1.0" }
+}
