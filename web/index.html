@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111111"><meta name="description" content="TWIGA AI Receptionist — intelligent phone answering for modern businesses.">
+<title>TWIGA — AI Receptionist</title>
+<style>
+:root{color-scheme:dark;--bg:#0c0c0d;--panel:#171719;--line:#29292d;--muted:#a1a1aa;--orange:#f28b35;--white:#fafafa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#392011 0,transparent 35%),var(--bg);color:var(--white);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+header{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,6vw,84px)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.14em}.mark{width:34px;height:34px;border:2px solid var(--orange);border-radius:12px 12px 12px 3px;display:grid;place-items:center;color:var(--orange);font-size:20px}
+nav{display:flex;gap:26px;color:var(--muted);font-size:13px}nav a{color:inherit;text-decoration:none}
+.pill{border:1px solid #70401f;color:#ffc18c;border-radius:99px;padding:7px 12px;font-size:12px}
+main{max-width:1180px;margin:auto;padding:72px 24px 50px}.eyebrow{color:var(--orange);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+h1{font-size:clamp(42px,7vw,76px);line-height:1.02;letter-spacing:-.055em;max-width:760px;margin:18px 0}h1 span{color:var(--orange)}
+.lead{max-width:620px;color:#b5b5bc;font-size:18px}.actions{display:flex;gap:12px;margin:28px 0 54px;flex-wrap:wrap}
+button{border:0;border-radius:10px;padding:13px 19px;font-weight:700;cursor:pointer}.primary{background:var(--orange);color:#17100b}.secondary{background:#202023;color:white;border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:linear-gradient(145deg,#1b1b1e,#121214);border:1px solid var(--line);border-radius:16px;padding:22px;min-height:150px}.icon{color:var(--orange);font-size:22px}.card h3{margin:13px 0 5px;font-size:16px}.card p{margin:0;color:var(--muted);font-size:13px}
+.status{margin-top:24px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;background:#121214;color:var(--muted);font-size:13px;display:flex;gap:10px;align-items:center}.dot{width:8px;height:8px;border-radius:50%;background:#d99548;box-shadow:0 0 12px #d99548}
+footer{border-top:1px solid var(--line);padding:24px clamp(20px,6vw,84px);color:#777;font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:700px){nav{display:none}.grid{grid-template-columns:1fr}main{padding-top:54px}.lead{font-size:16px}}
+</style></head>
+<body>
+<header><div class="brand"><div class="mark">T</div>TWIGA</div><nav><a href="#platform">Platform</a><a href="#features">Capabilities</a><a href="https://github.com/michaelmuchemi33-design/TWIGA">Source code</a></nav><span class="pill">EARLY ACCESS</span></header>
+<main><div class="eyebrow">Your always-on front desk</div><h1>Every call matters.<br><span>TWIGA answers.</span></h1>
+<p class="lead">A configurable AI receptionist for businesses. Answer inbound calls, handle common questions, capture messages and route callers to the right people — with a voice experience built around your business.</p>
+<div class="actions"><button class="primary" onclick="document.getElementById('platform').scrollIntoView({behavior:'smooth'})">Explore the platform</button><button class="secondary" onclick="window.open('https://github.com/michaelmuchemi33-design/TWIGA','_blank')">View source code ↗</button></div>
+<section id="features" class="grid">
+<article class="card"><div class="icon">◉</div><h3>Natural phone conversations</h3><p>Voice-agent foundation designed for real-time inbound receptionist calls.</p></article>
+<article class="card"><div class="icon">⌁</div><h3>Business-aware answers</h3><p>Configure greetings, FAQs, opening hours, departments and business rules.</p></article>
+<article class="card"><div class="icon">⇄</div><h3>Call routing & messages</h3><p>Capture caller details, take messages and transfer calls to the right team.</p></article>
+</section>
+<div id="platform" class="status"><span class="dot"></span><span><strong style="color:#eee">Platform setup in progress.</strong> Dashboard preview is online; live telephony, business accounts and AI voice connections are being integrated next.</span></div>
+</main><footer><span>© <span id="year"></span> TWIGA. Built for businesses.</span><span>Open-source foundation · AGPL-3.0</span></footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body></html>
