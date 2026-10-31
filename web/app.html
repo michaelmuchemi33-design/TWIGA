@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TWIGA · Dashboard</title>
+<style>
+:root{--bg:#fff;--soft:#f6f6f4;--ink:#111;--mut:#6b6b6b;--line:#e7e7e3;--ok:#1f7a4d;--warn:#9a6b00;--bad:#b3261e;--r:12px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px}
+.brand{font-weight:800;letter-spacing:.14em;font-size:18px;padding:0 10px}.brand small{display:block;font-weight:500;letter-spacing:0;color:var(--mut);font-size:11px;margin-top:2px}
+nav{display:grid;gap:2px}nav button{background:none;border:0;text-align:left;padding:9px 12px;border-radius:9px;cursor:pointer;color:#444}
+nav button:hover{background:var(--soft)}nav button.on{background:var(--ink);color:#fff}
+.main{min-width:0}.top{height:60px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding:0 28px;position:sticky;top:0;background:#fffe;backdrop-filter:blur(6px);z-index:5}
+.content{padding:28px;max-width:1300px;margin:auto}h1{font-size:24px;margin:0}.sub{color:var(--mut);margin:4px 0 20px}
+.head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 13px;cursor:pointer}.btn:hover{border-color:#bbb}
+.btn.p{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.d{color:var(--bad)}.btn.s{padding:4px 9px;font-size:12px}
+.grid{display:grid;gap:14px}.stats{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:16px}
+.card{border:1px solid var(--line);border-radius:var(--r);padding:16px;background:#fff;min-width:0}.k{color:var(--mut);font-size:12px}.v{font-size:27px;font-weight:700;margin-top:6px}
+.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:600}tr.click{cursor:pointer}tr.click:hover{background:var(--soft)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;background:var(--soft);font-size:12px}.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.empty{padding:40px 10px;text-align:center;color:var(--mut)}.err{background:#fdf0ef;color:var(--bad);padding:12px 14px;border-radius:10px;margin-bottom:14px}
+.note{background:var(--soft);padding:12px 14px;border-radius:10px;margin-bottom:14px;color:#444}
+.bar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}.bar input,.bar select{padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.field{display:grid;gap:4px;margin:10px 0}.field label{font-size:12px;color:var(--mut)}.field input,.field select,.field textarea{padding:9px 10px;border:1px solid var(--line);border-radius:9px;width:100%;background:#fff}.field textarea{min-height:90px}
+.modal{position:fixed;inset:0;background:#0006;display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.modal.on{display:flex}
+.sheet{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:560px;max-height:90vh;overflow:auto}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login .card{width:100%;max-width:360px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#c8c8c4;margin-right:8px}.dot.ok{background:var(--ok)}
+.msg{white-space:pre-wrap;padding:8px 10px;border-radius:10px;margin:6px 0;background:var(--soft)}.msg.u{background:#fff;border:1px solid var(--line)}
+@media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;padding:10px;border-right:0;border-bottom:1px solid var(--line)}
+nav{display:flex}nav button{white-space:nowrap}.brand small{display:none}.content{padding:16px}.top{padding:0 16px}}
+</style></head><body>
+<div id="root"></div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<script>
+const $=s=>document.querySelector(s), esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const api=async(p,o={})=>{const r=await fetch(p,{credentials:"same-origin",headers:{"Content-Type":"application/json"},...o,body:o.body?JSON.stringify(o.body):undefined});
+  const j=await r.json().catch(()=>({}));if(r.status===401){showLogin();throw new Error("auth")}if(!r.ok)throw new Error(j.error||("Request failed ("+r.status+")"));return j};
+const fmtDur=s=>s==null?"-":Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s", fmtDT=d=>d?new Date(d).toLocaleString("en-KE",{timeZone:"Africa/Nairobi",dateStyle:"medium",timeStyle:"short"}):"-";
+const pill=(t,cls="")=>`<span class="pill ${cls}">${esc(t)}</span>`;
+const stat={completed:"ok",in_progress:"warn",missed:"bad",failed:"bad",granted:"ok",opted_out:"bad",unknown:"warn",pending:"warn",scheduled:"warn",running:"ok",paused:"warn"};
+const sp=v=>pill(String(v||"").replace("_"," "),stat[v]||"");
+
+const RES={
+ contacts:{t:"Contacts",s:"People TWIGA can talk to. Outbound calling needs recorded consent.",cols:[["full_name","Name"],["phone","Phone"],["company","Company"],["consent_status","Consent",sp],["tags","Tags"]],
+  form:[["full_name","Full name","text"],["phone","Phone (07… or +254…)","text"],["email","Email","text"],["company","Company","text"],["tags","Tags (comma separated)","text"],["consent_status","Consent","select",["unknown","granted","opted_out"]],["consent_source","Consent source (required when granted)","text"],["preferred_time","Preferred contact time","text"],["notes","Notes","textarea"]]},
+ follow_ups:{t:"Follow-ups",s:"Callbacks and messages. AI-taken messages appear here as pending.",cols:[["scheduled_at","When",fmtDT],["phone","Phone"],["instructions","Instructions"],["priority","Priority"],["source","Source"],["status","Status",sp]],
+  form:[["scheduled_at","Date & time","datetime"],["phone","Phone","text"],["priority","Priority","select",["normal","high","low"]],["status","Status","select",["pending","completed","cancelled"]],["instructions","Instructions","textarea"]]},
+ campaigns:{t:"Campaigns",s:"Plan outbound campaigns. The dialling engine is OFF in this prototype, so nothing is called.",cols:[["name","Name"],["status","Status",sp],["start_at","Start",fmtDT],["max_calls_per_hour","Max/hour"],["max_retries","Retries"]],
+  form:[["name","Campaign name","text"],["description","Description","textarea"],["status","Status","select",["draft","scheduled","paused","cancelled"]],["start_at","Start","datetime"],["max_calls_per_hour","Max calls per hour","number"],["max_concurrent","Max concurrent","number"],["max_retries","Max retries","number"]]},
+ agents:{t:"AI Agents",s:"The prompt, greeting and voice the receptionist uses on live calls. The first enabled agent answers.",cols:[["name","Name"],["description","Description"],["language","Language"],["voice_id","Voice ID"],["enabled","Enabled",v=>pill(v?"on":"off",v?"ok":"")]],
+  form:[["name","Agent name","text"],["description","Description","text"],["greeting","Greeting (first thing said)","textarea"],["system_prompt","Instructions / personality","textarea"],["language","Language","select",["en","sw","en+sw"]],["voice_id","ElevenLabs voice ID (optional)","text"],["enabled","Enabled","checkbox"]]},
+ knowledge:{t:"Knowledge Base",s:"Facts the AI may use (prices, hours, policies). It is told never to invent anything outside this.",cols:[["title","Title"],["category","Category"],["content","Content",v=>esc(String(v).slice(0,90))]],
+  form:[["title","Title","text"],["category","Category","text"],["content","Content","textarea"]]}
+};
+let timer;
+
+function showLogin(){clearInterval(timer);$("#root").innerHTML=`<div class="login"><div class="card"><div class="brand">TWIGA</div><p class="sub">Sign in to your dashboard</p><div id="le"></div>
+ <div class="field"><label>Password</label><input id="pw" type="password" autocomplete="current-password"></div><button class="btn p" style="width:100%" id="lb">Sign in</button></div></div>`;
+ const go=async()=>{try{await api("/api/auth",{method:"POST",body:{password:$("#pw").value}});boot()}catch(e){$("#le").innerHTML=`<div class="err">${esc(e.message)}</div>`}};
+ $("#lb").onclick=go;$("#pw").onkeydown=e=>e.key==="Enter"&&go()}
+
+const NAV=[["overview","Overview"],["live","Live Calls"],["calls","Call History"],["contacts","Contacts"],["follow_ups","Follow-ups"],["campaigns","Campaigns"],["agents","AI Agents"],["knowledge","Knowledge Base"],["integrations","Phone & Integrations"]];
+async function boot(){
+ try{const me=await api("/api/auth");if(!me.signedIn)return showLogin()}catch{return}
+ $("#root").innerHTML=`<div class="app"><aside class="side"><div class="brand">TWIGA<small>AI receptionist</small></div><nav>${NAV.map(([k,l])=>`<button data-k="${k}">${l}</button>`).join("")}</nav></aside>
+ <div class="main"><div class="top"><button class="btn s" id="out">Sign out</button></div><div class="content" id="c"></div></div></div>`;
+ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>go(b.dataset.k));$("#out").onclick=async()=>{await api("/api/auth",{method:"DELETE"});showLogin()};
+ go(location.hash.slice(1)||"overview")}
+function go(k){location.hash=k;clearInterval(timer);document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.k===k));
+ const f={overview,live,calls,integrations}[k]||(()=>table(k));f().catch(e=>{if(e.message!=="auth")$("#c").innerHTML=`<div class="err">${esc(e.message)}</div>`})}
+const head=(t,s,act="")=>`<div class="head"><div><h1>${t}</h1><p class="sub">${s}</p></div><div>${act}</div></div>`;
+const loading=()=>$("#c").innerHTML=`<div class="empty">Loading…</div>`;
+
+async function overview(){loading();const s=await api("/api/stats"),max=Math.max(1,...s.by_day.map(d=>d.inbound+d.outbound));
+ const card=(k,v)=>`<div class="card"><div class="k">${k}</div><div class="v">${v}</div></div>`;
+ $("#c").innerHTML=head("Overview","Figures come straight from recorded calls (last 90 days). No sample data.")+
+ `<div class="grid stats">${card("Total calls",s.total)}${card("Incoming",s.inbound)}${card("Outgoing",s.outbound)}${card("Answered",s.answered)}${card("Missed",s.missed)}${card("Avg duration",fmtDur(s.avg_duration_seconds))}${card("Total minutes",s.total_minutes)}${card("Active campaigns",s.active_campaigns)}${card("Pending follow-ups",s.pending_followups)}</div>
+ <div class="card"><div class="k" style="margin-bottom:8px">Calls per day, last 14 days &nbsp; <span class="pill">■ incoming</span> <span class="pill" style="color:#777">■ outgoing</span></div>
+ ${s.total?`<svg viewBox="0 0 1000 150" preserveAspectRatio="none" style="width:100%;height:170px"></svg>`:`<div class="empty">No calls recorded yet. They appear here after the first real call.</div>`}</div>`;
+ const svg=$("#c svg");if(svg)svg.innerHTML=s.by_day.map((d,i)=>{const w=1000/s.by_day.length,hi=d.inbound/max*120,ho=d.outbound/max*120;return `<rect x="${i*w+6}" width="${w-12}" y="${130-hi}" height="${hi}" fill="#111"/><rect x="${i*w+6}" width="${w-12}" y="${130-hi-ho}" height="${ho}" fill="#9a9a96"/><text x="${i*w+w/2}" y="146" font-size="11" text-anchor="middle" fill="#6b6b6b">${d.date.slice(8)}</text>`}).join("")}
+
+function callRows(rows){return rows.length?`<div class="tbl"><table><tr><th>Started</th><th>Direction</th><th>From</th><th>To</th><th>Duration</th><th>Status</th><th>Outcome</th></tr>${rows.map((c,i)=>`<tr class="click" data-i="${i}"><td>${fmtDT(c.started_at)}</td><td>${esc(c.direction)}</td><td>${esc(c.from_number||"-")}</td><td>${esc(c.to_number||"-")}</td><td>${fmtDur(c.duration_seconds)}</td><td>${sp(c.status)}</td><td>${esc(c.outcome||"-")}</td></tr>`).join("")}</table></div>`:`<div class="empty">Nothing here yet.</div>`}
+function openCall(c){const t=(c.transcript||[]);modal(`<h2 style="margin-top:0">Call detail</h2><p class="k">${fmtDT(c.started_at)} · ${esc(c.direction)} · ${fmtDur(c.duration_seconds)} · ${esc(c.status)}</p>${t.length?t.map(m=>`<div class="msg ${m.role==="user"?"u":""}"><b>${m.role==="user"?"Caller":"TWIGA"}:</b> ${esc(m.text)}</div>`).join(""):`<div class="empty">No transcript was captured for this call.</div>`}<div style="text-align:right"><button class="btn" onclick="closeModal()">Close</button></div>`)}
+async function live(){const draw=async()=>{const rows=(await api("/api/data/calls")).filter(c=>c.status==="in_progress");$("#c").innerHTML=head("Live Calls","Refreshes every 5 seconds.")+callRows(rows);bindRows(rows)};loading();await draw();timer=setInterval(()=>draw().catch(()=>{}),5000)}
+async function calls(){loading();const all=await api("/api/data/calls");const draw=()=>{const q=$("#q").value.toLowerCase(),d=$("#d").value,s=$("#s").value;
+  const rows=all.filter(c=>(!d||c.direction===d)&&(!s||c.status===s)&&(!q||JSON.stringify([c.from_number,c.to_number,c.outcome,c.transcript]).toLowerCase().includes(q)));$("#t").innerHTML=callRows(rows);bindRows(rows)};
+ $("#c").innerHTML=head("Call History","Search, filter and open any call for its transcript.",`<button class="btn" id="csv">Export CSV</button>`)+`<div class="bar"><input id="q" placeholder="Search number, outcome, transcript"><select id="d"><option value="">All directions</option><option>inbound</option><option>outbound</option></select><select id="s"><option value="">All statuses</option><option>completed</option><option>in_progress</option><option>missed</option><option>failed</option></select></div><div id="t"></div>`;
+ ["q","d","s"].forEach(i=>$("#"+i).oninput=draw);draw();
+ $("#csv").onclick=()=>{const h=["started_at","direction","from_number","to_number","status","duration_seconds","outcome"],q=v=>`"${String(v??"").replace(/"/g,'""')}"`;download("twiga-calls.csv",[h.join(",")].concat(all.map(c=>h.map(k=>q(c[k])).join(","))).join("\n"))}}
+function bindRows(rows){document.querySelectorAll("tr.click").forEach(tr=>tr.onclick=()=>openCall(rows[tr.dataset.i]))}
+
+async function table(k){const R=RES[k];loading();const rows=await api("/api/data/"+k);let extra="";
+ if(k==="campaigns"){const p=await api("/api/data/campaigns?preview=1");extra=`<div class="note"><b>${p.eligible_count}</b> contact(s) are eligible for outbound (consent recorded, not opted out). ${p.ineligible.length} excluded: ${p.ineligible.slice(0,5).map(x=>esc(x.full_name)+" ("+esc(x.reason)+")").join(", ")||"none"}${p.ineligible.length>5?"…":""}.<br>Campaign calls only start after approval AND the dialling engine is enabled; neither exists in this prototype.</div>`}
+ if(k==="contacts")extra=`<div class="note">CSV import columns: <code>full_name,phone,email,company</code>. Imported contacts are always saved as <b>no consent</b>; record consent per contact before any outbound use.</div>`;
+ $("#c").innerHTML=head(R.t,R.s,(k==="contacts"?`<label class="btn" style="margin-right:6px">Import CSV<input id="imp" type="file" accept=".csv" hidden></label>`:"")+`<button class="btn p" id="add">Add</button>`)+extra+
+ (rows.length?`<div class="tbl"><table><tr>${R.cols.map(c=>`<th>${c[1]}</th>`).join("")}<th></th></tr>${rows.map((r,i)=>`<tr>${R.cols.map(c=>`<td>${c[2]?c[2](r[c[0]]):esc(r[c[0]]??"-")}</td>`).join("")}<td style="white-space:nowrap"><button class="btn s" data-e="${i}">Edit</button> <button class="btn s d" data-x="${i}">Delete</button></td></tr>`).join("")}</table></div>`:`<div class="empty">No ${R.t.toLowerCase()} yet. Click Add to create the first one.</div>`);
+ $("#add").onclick=()=>form(k);document.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>form(k,rows[b.dataset.e]));
+ document.querySelectorAll("[data-x]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this item?")){await api(`/api/data/${k}?id=${rows[b.dataset.x].id}`,{method:"DELETE"}).catch(e=>alert(e.message));table(k)}});
+ if($("#imp"))$("#imp").onchange=e=>importCsv(e.target.files[0])}
+function form(k,row){const R=RES[k];const fld=([key,label,type,opts])=>{const v=row?row[key]:(key==="enabled"?true:"");let inp;
+  if(type==="textarea")inp=`<textarea name="${key}">${esc(v)}</textarea>`;else if(type==="select")inp=`<select name="${key}">${opts.map(o=>`<option ${o===v?"selected":""}>${o}</option>`).join("")}</select>`;
+  else if(type==="checkbox")inp=`<input type="checkbox" name="${key}" ${v?"checked":""} style="width:auto">`;else if(type==="datetime")inp=`<input type="datetime-local" name="${key}" value="${v?new Date(v).toISOString().slice(0,16):""}">`;
+  else inp=`<input type="${type}" name="${key}" value="${esc(v)}">`;return `<div class="field"><label>${label}</label>${inp}</div>`};
+ modal(`<h2 style="margin-top:0">${row?"Edit":"Add"} · ${R.t}</h2><div id="fe"></div><form id="f">${R.form.map(fld).join("")}</form><div style="text-align:right;margin-top:10px"><button class="btn" onclick="closeModal()">Cancel</button> <button class="btn p" id="sv">Save</button></div>`);
+ $("#sv").onclick=async()=>{const body={};R.form.forEach(([key,,type])=>{const el=$("#f").elements[key];let v=type==="checkbox"?el.checked:el.value;if(type==="datetime"&&v)v=new Date(v).toISOString();if(type==="number"&&v!=="")v=Number(v);body[key]=v});
+  try{await api(`/api/data/${k}${row?"?id="+row.id:""}`,{method:row?"PATCH":"POST",body});closeModal();table(k)}catch(e){$("#fe").innerHTML=`<div class="err">${esc(e.message)}</div>`}}}
+async function importCsv(file){if(!file)return;const lines=(await file.text()).split(/\r?\n/).filter(Boolean),h=lines.shift().split(",").map(s=>s.trim().replace(/"/g,"").toLowerCase());let ok=0,bad=[];
+ for(const l of lines){const c=l.split(",").map(s=>s.trim().replace(/^"|"$/g,""));const o={};h.forEach((k,i)=>{if(["full_name","phone","email","company"].includes(k))o[k]=c[i]});o.consent_status="unknown";
+  try{await api("/api/data/contacts",{method:"POST",body:o});ok++}catch(e){bad.push((o.full_name||o.phone||"row")+": "+e.message)}}
+ alert(`Imported ${ok} contact(s).${bad.length?"\nSkipped "+bad.length+":\n"+bad.slice(0,8).join("\n"):""}`);table("contacts")}
+
+async function integrations(){loading();const i=await api("/api/integrations"),row=(l,ok,help)=>`<tr><td><span class="dot ${ok?"ok":""}"></span>${l}</td><td>${ok?"Configured":"Not configured"}</td><td class="k">${help}</td></tr>`;
+ $("#c").innerHTML=head("Phone & Integrations","Shows whether each server setting exists. A tick means configured, not that a live call has been tested.")+
+ `<div class="card" style="margin-bottom:14px"><div class="k">Business number</div><div class="v">${esc(i.phone_number||"Not set")}</div><p class="k">SautiKit voice webhook: <code>${esc(i.webhook_url||"set TWIGA_VOICE_CALLBACK_URL")}</code></p></div>
+ <div class="card tbl"><table><tr><th>Component</th><th>Status</th><th>Needed</th></tr>${row("Database (Supabase)",i.checks.database,"SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, TWIGA_ORG_ID")}${row("SautiKit",i.checks.sautikit,"SAUTIKIT_API_KEY")}${row("ElevenLabs agent",i.checks.elevenlabs,"ELEVENLABS_API_KEY, ELEVENLABS_AGENT_ID")}${row("Audio bridge",i.checks.audio_bridge,"TWIGA_AUDIO_BRIDGE_URL (wss://…), BRIDGE_SECRET")}${row("Message tool",i.checks.ai_message_tool,"TOOLS_SECRET")}${row("Outbound calling",i.checks.outbound_enabled,"Off by default. Needs auth, consent and a tested provider first.")}</table></div>`}
+
+function modal(h){$("#sheet").innerHTML=h;$("#modal").classList.add("on")}function closeModal(){$("#modal").classList.remove("on")}$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+function download(n,t){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download=n;a.click()}
+boot();
+</script></body></html>
