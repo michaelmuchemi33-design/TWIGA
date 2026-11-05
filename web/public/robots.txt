@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://twiga.co.ke/sitemap.xml
