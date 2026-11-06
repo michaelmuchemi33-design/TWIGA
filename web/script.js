@@ -158,7 +158,7 @@ import Vapi from "@vapi-ai/web";
       // Voice is overridden per web call, so no changes are made to the saved assistant.
       // The selected ElevenLabs voice is synthesised by Vapi during this live session.
       const assistantOverrides = {
-        firstMessage: "Hi there, thanks for trying TWIGA. I'm the AI receptionist. What can I help you with today?",
+        firstMessage: "[cheerfully] Hello! Thanks for trying TWIGA. How can I help you today?",
         voice: {
           provider: "11labs",
           model: "eleven_v3",
