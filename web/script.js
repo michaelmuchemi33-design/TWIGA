@@ -5,8 +5,8 @@ import Vapi from "@vapi-ai/web";
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
   // Public Vapi key is intended for browser use. Never place a private Vapi key here.
-  const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY || "605ebb25-4c52-4e85-bbb7-95aa65e7a2a0";
-  const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID || "84b009c6-0634-44e2-9861-13d746e82542";
+  const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY || "3b23fdc9-f276-4fe8-9b99-5a2a1c5ae0e9";
+  const VAPI_ASSISTANT_ID = import.meta.env.VITE_VAPI_ASSISTANT_ID || "ea3ae8f7-fb6f-430e-9c33-96d9a919ade3";
 
   const nav = $("#mainNav");
   const menu = $("#menuToggle");
