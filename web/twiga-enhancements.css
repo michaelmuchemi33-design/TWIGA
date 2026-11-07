@@ -198,3 +198,6 @@
  .business-grid{grid-template-columns:1fr}
  .app-download-section .apk-cta-copy strong{font-size:11px}
 }
+
+/* The site's navigation controller toggles .open (not .is-open). */
+@media(max-width:900px){.main-nav.open{display:flex}}
