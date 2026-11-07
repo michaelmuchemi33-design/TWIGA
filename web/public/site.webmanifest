@@ -1,16 +1,17 @@
 {
-  "name": "TWIGA — AI Receptionist",
+  "name": "TWIGA",
   "short_name": "TWIGA",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#111111",
+  "theme_color": "#F47721",
   "icons": [
     {
       "src": "/twiga-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ]
 }
