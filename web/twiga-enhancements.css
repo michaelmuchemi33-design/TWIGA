@@ -1,0 +1,203 @@
+/* TWIGA brand refinements. Preserve the existing product direction; avoid generic UI patterns. */
+:root{--twiga-orange:#F47721;--twiga-ink:#111111;--twiga-paper:#FFFFFF;--twiga-muted:#F6F6F5}
+.apk-cta-wrap{display:flex;justify-content:center;width:min(100%,485px);margin:15px 0 0}
+.apk-cta{width:100%;display:flex;align-items:center;gap:13px;padding:12px 15px;border:1px solid #e9e5df;border-radius:15px;background:#fff;box-shadow:0 8px 24px rgba(17,17,17,.045);transition:transform .35s cubic-bezier(.22,1,.36,1),border-color .25s,box-shadow .25s}
+.apk-cta:hover{transform:translateY(-2px);border-color:rgba(244,119,33,.55);box-shadow:0 12px 28px rgba(17,17,17,.08)}
+.apk-cta:focus-visible{outline:3px solid rgba(244,119,33,.35);outline-offset:3px}
+.apk-cta-icon{width:36px;height:36px;flex:0 0 36px;border-radius:11px;display:grid;place-items:center;background:#fff1e8;color:#d96517;font-size:20px;font-weight:700}
+.apk-cta-copy{display:grid;gap:2px;min-width:0}
+.apk-cta-copy strong{font-size:12px;line-height:1.4;color:#171717}
+.apk-cta-copy small{font-size:10px;line-height:1.5;color:#77716a}
+.apk-cta-arrow{margin-left:auto;color:#d96517;font-size:16px}
+.what-section{display:grid;grid-template-columns:1.05fr .95fr;gap:80px;align-items:center;padding-top:90px;padding-bottom:90px}
+.what-copy h2{font:700 clamp(34px,4vw,50px)/1.06 var(--display);letter-spacing:-2.4px;margin:16px 0}
+.what-copy h2 em{font-style:normal;color:var(--orange)}
+.what-copy p{max-width:590px;color:#68635d;font-size:14px;line-height:1.85;margin:0 0 13px}
+.what-copy .text-link{display:inline-flex;margin-top:12px;font-size:12px;font-weight:800;color:#171717}
+.what-points{border-top:1px solid #e9e6e1}
+.what-points article{display:grid;grid-template-columns:42px 1fr;gap:15px;padding:22px 0;border-bottom:1px solid #e9e6e1}
+.what-points article>span{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:1px;padding-top:2px}
+.what-points b{font:700 15px/1.4 var(--display);color:#171717}
+.what-points p{font-size:12px;line-height:1.7;color:#77716a;margin:5px 0 0}
+.tagline-reveal{padding-top:28px;padding-bottom:95px}
+.tagline-reveal p{max-width:900px;margin:0;font:700 clamp(32px,5vw,58px)/1.12 var(--display);letter-spacing:-2.8px;color:#c9c7c3}
+.tagline-reveal p span{display:block;transition:color .8s cubic-bezier(.22,1,.36,1)}
+.tagline-reveal p span.is-active{color:#171717}
+.cursor-field{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.95}
+.hero-visual{--cursor-x:50%;--cursor-y:50%}
+.hero-visual:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(260px circle at var(--cursor-x) var(--cursor-y),rgba(244,119,33,.12),transparent 72%);opacity:0;transition:opacity .35s}
+.hero-visual.cursor-active:after{opacity:1}
+@media(max-width:760px){
+ .apk-cta-wrap{margin-top:12px;width:100%}
+ .apk-cta{padding:10px 12px}
+ .apk-cta-copy strong{font-size:11px}
+ .apk-cta-copy small{font-size:9px}
+ .what-section{grid-template-columns:1fr;gap:30px;padding-top:64px;padding-bottom:64px}
+ .what-copy h2{font-size:36px;letter-spacing:-1.8px}
+ .what-points article{padding:17px 0}
+ .tagline-reveal{padding-top:10px;padding-bottom:65px}
+ .tagline-reveal p{font-size:34px;letter-spacing:-1.6px}
+}
+@media(prefers-reduced-motion:reduce){
+ .apk-cta,.tagline-reveal p span,.hero-visual:after{transition:none}
+ .tagline-reveal p span{color:#171717}
+}
+
+.calendar-preview{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:800;color:#77716a}.calendar-preview i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#aaa39a}
+
+
+/* App download is a distinct, centered action immediately after the hero. */
+.app-download-section{display:flex;justify-content:center;align-items:center;padding:28px 24px 34px;background:#fff;border-bottom:1px solid #efede9}
+.app-download-section .apk-cta{width:min(100%,520px);min-height:76px;padding:15px 19px;border:1px solid #e6e2dc;border-radius:14px;box-shadow:0 8px 26px rgba(17,17,17,.045)}
+.app-download-section .apk-cta-copy strong{font-size:14px}
+.app-download-section .apk-cta-copy small{font-size:12px}
+.app-download-section .apk-cta-icon{width:42px;height:42px;flex-basis:42px}
+.hero{position:relative;isolation:isolate;overflow:hidden}
+.hero>.cursor-field{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.9}
+.hero-grid,.hero-bottom{position:relative;z-index:2}
+.hero-visual{isolation:isolate}
+.hero-visual:after{pointer-events:none}
+.apk-cta{min-width:0}
+.apk-cta-copy small{overflow-wrap:anywhere}
+
+/* Mobile layout corrections: no squeezed header, overlapping mockups or horizontal scroll. */
+@media(max-width:760px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .site-header{width:calc(100% - 32px);height:68px;grid-template-columns:minmax(0,1fr) 38px auto;gap:9px}
+  .brand{min-width:0;gap:8px}
+  .brand-mark{width:34px;height:34px;flex:0 0 34px}
+  .brand-word{font-size:21px}
+  .header-cta{min-height:36px;padding:0 11px;font-size:10px;white-space:nowrap}
+  .menu-toggle{width:36px;height:36px}
+  .main-nav{position:absolute;top:66px;left:-16px;right:-16px;max-height:calc(100svh - 74px);overflow:auto;padding:22px 24px 28px;border-radius:0 0 16px 16px;box-shadow:0 18px 36px rgba(0,0,0,.12)}
+  .hero{padding:28px 0 16px}
+  .hero-grid{width:calc(100% - 36px);display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+  .hero-copy{padding:0;min-width:0}
+  .hero h1{max-width:620px;font-size:clamp(40px,10.8vw,54px);line-height:1.02;letter-spacing:-2.8px}
+  .hero-lead{max-width:560px;font-size:14px;line-height:1.7}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .hero-actions .btn{min-height:44px;padding:0 15px;font-size:12px}
+  .hero-proof{font-size:10px;line-height:1.5}
+  .hero-visual{width:100%;height:390px;min-height:0;border-radius:18px;overflow:hidden}
+  .handset-stage{width:430px;height:560px;top:28px;left:50%;transform:translateX(-50%) scale(.68);transform-origin:top center}
+  .visual-label{top:13px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:7px}
+  .notice{width:138px;min-width:0;padding:7px 8px;gap:7px}
+  .notice b{font-size:8px}
+  .notice small{font-size:7px}
+  .notice-icon{width:23px;height:23px;flex-basis:23px}
+  .notice-booking{top:78px;left:8px}
+  .notice-missed,.notice-reminder,.notice-enquiry,.notice-handoff{display:none}
+  .hero-bottom{width:calc(100% - 36px);justify-content:center;gap:9px;flex-wrap:wrap;margin-top:14px;font-size:7px}
+  .app-download-section{padding:20px 18px 25px}
+  .app-download-section .apk-cta{width:min(100%,520px);min-height:70px;padding:12px}
+  .app-download-section .apk-cta-copy strong{font-size:13px}
+  .app-download-section .apk-cta-copy small{font-size:10px}
+  .intro-strip-inner{width:calc(100% - 36px);flex-wrap:wrap;padding:15px 0;gap:9px}
+  .intro-strip p{flex:1;min-width:180px;font-size:11px}
+  .intro-strip a{font-size:9px}
+  .what-section{grid-template-columns:minmax(0,1fr);gap:28px}
+  .benefit-layout,.calendar-wrap,.live-inner,.demo-booking{grid-template-columns:minmax(0,1fr);gap:25px}
+  .benefit-photo-wrap{min-height:270px}
+  .business-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .business-card{min-width:0;padding:17px 14px;min-height:0}
+  .business-card p{min-height:0}
+  .calendar-card{min-width:0;padding:13px}
+  .calendar-confirm{left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px)}
+  .demo-form{min-width:0}
+}
+@media(max-width:480px){
+  .site-header{grid-template-columns:minmax(0,1fr) 36px}
+  .header-cta{display:none}
+  .hero h1{font-size:clamp(38px,10.5vw,47px);letter-spacing:-2.2px}
+  .hero-actions{display:grid;grid-template-columns:1fr}
+  .hero-actions .btn{width:100%;justify-content:center}
+  .hero-visual{height:355px}
+  .handset-stage{transform:translateX(-50%) scale(.61);top:28px}
+  .notice-booking{top:65px;left:5px}
+  .business-grid{grid-template-columns:1fr}
+  .business-card{padding:19px}
+  .business-card p{font-size:12px}
+  .calendar-grid{grid-template-columns:39px minmax(0,1fr);min-height:260px;background-position:49px 13px}
+  .day-col{min-height:245px}
+  .booking b{font-size:8px}
+  .booking small{font-size:7px}
+  .footer-inner nav{display:flex;flex-wrap:wrap}
+  .demo-form-row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero>.cursor-field{display:none}
+}
+
+
+/* Final responsive layout pass — applied after the original site styles. */
+@media(max-width:900px){
+ .site-header{width:calc(100% - 40px);height:72px;grid-template-columns:1fr 40px;gap:12px}
+ .main-nav{display:none;position:absolute;top:68px;left:0;right:0;z-index:40;padding:18px;background:#fff;border:1px solid #eee;border-radius:14px;box-shadow:0 16px 36px rgba(0,0,0,.10);flex-direction:column;align-items:stretch;gap:0}
+ .main-nav.is-open{display:flex}
+ .main-nav a{padding:14px 8px;border-bottom:1px solid #f1efec;font-size:14px}
+ .main-nav a:last-child{border-bottom:0}
+ .menu-toggle{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:40px;height:40px;border:1px solid #e9e6e1;border-radius:50%;background:#fff}
+ .menu-toggle span{display:block;width:15px;height:1.5px;background:#151515}
+ .header-cta{display:none}
+ .hero{padding:26px 0 16px}
+ .hero-grid{width:calc(100% - 44px);min-height:0;grid-template-columns:minmax(0,1fr);gap:26px}
+ .hero-copy{padding:20px 0 0}
+ .hero h1{font-size:clamp(43px,8vw,68px);letter-spacing:-2.8px;line-height:1.02}
+ .hero-visual{height:min(590px,115vw);min-height:390px;border-radius:24px}
+ .handset-stage{transform:translateX(-50%) scale(.82);transform-origin:top center}
+ .hero-bottom{width:calc(100% - 44px);margin:18px auto 0;justify-content:center;flex-wrap:wrap;gap:10px;font-size:8px}
+ .app-download-section{padding:22px 20px 28px}
+ .app-download-section .apk-cta{width:min(100%,540px)}
+ .what-section,.benefit-layout,.calendar-wrap,.live-inner,.demo-booking{grid-template-columns:minmax(0,1fr);gap:26px}
+ .what-section,.tagline-reveal,.how-section,.benefits-section,.calendar-section,.businesses-section,.live-section,.faq-section,.demo-booking,.trust-section,.contact-section{padding-left:22px;padding-right:22px}
+ .calendar-card{width:100%;min-width:0}
+}
+@media(max-width:600px){
+ .site-header{width:calc(100% - 32px);height:64px}
+ .brand{gap:7px}.brand-mark{width:34px;height:34px;flex:0 0 34px}.brand-mark img{width:100%;height:100%;object-fit:contain}
+ .brand-word{font-size:21px}
+ .main-nav{top:61px}
+ .hero-grid{width:calc(100% - 36px);gap:21px}
+ .hero-copy{padding-top:15px}
+ .eyebrow{font-size:8px;letter-spacing:1.2px}
+ .hero h1{font-size:clamp(39px,10.3vw,53px);letter-spacing:-2.4px;margin:19px 0 16px}
+ .hero-lead{font-size:14px;line-height:1.65}
+ .hero-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:21px}
+ .hero-actions .btn{width:100%;min-height:47px}
+ .hero-proof{font-size:10px;line-height:1.5}
+ .hero-visual{height:390px;min-height:390px;border-radius:19px}
+ .handset-stage{top:34px;transform:translateX(-50%) scale(.64)}
+ .visual-label{top:15px;font-size:8px;letter-spacing:1px}
+ .notice{max-width:138px;min-width:0;padding:8px;gap:7px}
+ .notice b{font-size:8px}.notice small{font-size:7px}
+ .notice-booking{left:8px;top:72px}
+ .notice-missed,.notice-reminder,.notice-enquiry,.notice-handoff{display:none}
+ .hero-bottom{width:calc(100% - 36px);gap:8px 11px;font-size:7px}
+ .app-download-section{padding:18px 16px 22px}
+ .app-download-section .apk-cta{min-height:70px;padding:11px 13px;gap:10px;border-radius:13px}
+ .app-download-section .apk-cta-copy{min-width:0}
+ .app-download-section .apk-cta-copy strong{font-size:12px;line-height:1.35}
+ .app-download-section .apk-cta-copy small{font-size:10px;line-height:1.4}
+ .app-download-section .apk-cta-icon{width:38px;height:38px;flex-basis:38px}
+ .intro-strip-inner{width:100%;display:flex;flex-wrap:wrap;gap:10px;padding:14px 0}
+ .intro-strip-inner p{flex:1 1 190px;font-size:11px}
+ .intro-strip-inner a{font-size:10px}
+ .business-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .business-card{min-width:0;padding:15px 12px}
+ .business-card h3{font-size:13px}.business-card p{font-size:10px;line-height:1.5}
+ .calendar-card{padding:10px;overflow:hidden}
+ .calendar-toolbar{flex-wrap:wrap;gap:8px}
+ .calendar-grid{grid-template-columns:36px repeat(7,minmax(52px,1fr));overflow-x:auto;max-width:100%}
+ .calendar-scroll{overflow-x:auto}
+ .footer-inner{flex-wrap:wrap;gap:18px}
+}
+@media(max-width:380px){
+ .hero h1{font-size:38px;letter-spacing:-2.2px}
+ .hero-visual{height:350px;min-height:350px}
+ .handset-stage{transform:translateX(-50%) scale(.56)}
+ .business-grid{grid-template-columns:1fr}
+ .app-download-section .apk-cta-copy strong{font-size:11px}
+}
+
+/* The site's navigation controller toggles .open (not .is-open). */
+@media(max-width:900px){.main-nav.open{display:flex}}
