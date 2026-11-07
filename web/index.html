@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
-  <title>TWIGA | AI Receptionist for Kenyan Businesses</title>
-  <meta name="description" content="Meet TWIGA, the AI receptionist built for Kenyan businesses. Answer calls, book appointments, recover missed enquiries and keep customers informed — day and night.">
+  <title>AI Receptionist Kenya for Business Calls & Bookings | TWIGA</title>
+  <meta name="description" content="TWIGA is an AI receptionist for Kenyan businesses. It answers customer calls, captures enquiries, books appointments and follows up when your team is busy.">
   <meta name="keywords" content="AI receptionist Kenya, AI receptionist for business, business call answering Kenya, salon booking assistant, barbershop appointment booking, automated appointment reminders, virtual receptionist Kenya">
   <link rel="canonical" href="https://twiga.co.ke/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="TWIGA">
   <meta property="og:url" content="https://twiga.co.ke/">
-  <meta property="og:title" content="TWIGA | Your business, always answered">
-  <meta property="og:description" content="An AI receptionist for Kenyan businesses. Answer calls, book appointments and follow up with customers automatically.">
-  <meta property="og:image" content="https://twiga.co.ke/assets/kenyan-barbershop.webp">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="AI receptionist for Kenyan businesses | TWIGA">
+  <meta property="og:description" content="Meet TWIGA, an AI receptionist for Kenyan businesses. Handle customer calls, appointment requests and follow ups while you serve customers.">
+  <meta property="og:image" content="https://twiga.co.ke/twiga-mark.svg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AI receptionist for Kenyan businesses | TWIGA">
+  <meta name="twitter:description" content="Answer customer calls, capture enquiries, book appointments and follow up with TWIGA.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="shortcut icon" href="/favicon.svg?v=2">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
@@ -37,6 +39,19 @@
     "offers":{"@type":"Offer","url":"https://twiga.co.ke/#contact","description":"Contact TWIGA for a setup and pricing plan for your business."}
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"FAQPage",
+    "mainEntity":[
+      {"@type":"Question","name":"Do I need a new phone number?","acceptedAnswer":{"@type":"Answer","text":"Not necessarily. TWIGA is designed to work with your existing business number through a suitable call forwarding setup. We confirm what your current line supports during setup."}},
+      {"@type":"Question","name":"Can TWIGA book appointments?","acceptedAnswer":{"@type":"Answer","text":"Yes, when connected to your chosen calendar and configured with your services, staff availability and booking rules."}},
+      {"@type":"Question","name":"Can TWIGA understand Kenyan customers?","acceptedAnswer":{"@type":"Answer","text":"TWIGA can be configured for the language and style your customers use, including English and Kiswahili. Voice and language quality depend on the selected assistant configuration."}},
+      {"@type":"Question","name":"What does an AI receptionist do for a small business?","acceptedAnswer":{"@type":"Answer","text":"An AI receptionist can answer configured customer questions, capture enquiries, handle appointment requests and send follow ups where enabled, helping a team stay focused on customers."}}
+    ]
+  }
+  </script>
+
 </head>
 <body>
   <header class="site-header" id="top">
@@ -57,6 +72,7 @@
 
   <main>
     <section class="hero" aria-labelledby="heroTitle">
+      <canvas class="cursor-field" id="cursorField" aria-hidden="true"></canvas>
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow"><span class="eyebrow-dot"></span> MADE FOR KENYAN BUSINESSES</div>
@@ -69,9 +85,9 @@
           <div class="hero-proof"><span class="proof-icon">✓</span><span>Built around the business number your customers already know.</span></div>
         </div>
 
-        <div class="hero-visual" aria-label="TWIGA receptionist dashboard illustration"><canvas class="cursor-field" id="cursorField" aria-hidden="true"></canvas>
+        <div class="hero-visual" aria-label="Illustration of a TWIGA receptionist handling a customer call">
           <div class="visual-glow"></div>
-          <div class="visual-label"><span class="status-dot"></span> TWIGA RECEPTIONIST · ONLINE</div>
+          <div class="visual-note">A customer calls. TWIGA helps.</div>
           <div class="handset-stage">
             <div class="phone-device" aria-hidden="true"><div class="phone-camera"></div></div>
             <div class="screen-ui" aria-hidden="true">
@@ -95,6 +111,14 @@
       <div class="hero-bottom"><span>ANSWER CALLS</span><i></i><span>TAKE BOOKINGS</span><i></i><span>FOLLOW UP</span><i></i><span>KEEP YOU INFORMED</span></div>
     </section>
 
+    <section class="app-download-strip" aria-label="Download the TWIGA Android app">
+      <a class="apk-download-hero" id="apkDownloadHero" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">
+        <span class="apk-download-icon" aria-hidden="true">↓</span>
+        <span class="apk-download-copy"><strong>Get TWIGA on Android</strong><small>Download the app for your business phone <span id="apkVersionHero"></span></small></span>
+        <span class="apk-download-arrow" aria-hidden="true">↗</span>
+      </a>
+    </section>
+
     <section class="intro-strip" aria-label="The TWIGA promise">
       <div class="intro-strip-inner"><span class="strip-mark"><img src="/twiga-mark.svg" alt=""></span><p>Stay with your customers. <strong>TWIGA takes care of the phone.</strong></p><a href="#benefits">See what it can do <b>↘</b></a></div>
     </section>
@@ -106,7 +130,7 @@
         <p>You do not need to be technical. Tell TWIGA how your business works, and we help connect the pieces.</p>
       </div>
       <div class="steps-grid">
-        <article class="step-card"><div class="step-visual"><div class="step-number">01</div><div class="step-graphic phone-forward"><span class="mini-phone">☎</span><div><b>Your business number</b><small>Keep the number customers know</small></div><span class="arrow-line">→</span><span class="mini-t-mark">T</span></div></div><h3>Keep your number</h3><p>We help route calls to TWIGA, so customers can keep calling the number they already know.</p></article>
+        <article class="step-card"><div class="step-visual"><div class="step-number">01</div><div class="step-graphic phone-forward"><span class="mini-phone">☎</span><div><b>Your business number</b><small>Keep the number customers know</small></div><span class="arrow-line">→</span><span class="mini-t-mark"><img src="/twiga-mark.svg" alt=""></span></div></div><h3>Keep your number</h3><p>We help route calls to TWIGA, so customers can keep calling the number they already know.</p></article>
         <article class="step-card"><div class="step-visual"><div class="step-number">02</div><div class="step-graphic setup-list"><div class="setup-title">Your business details <span>✓</span></div><div class="setup-row"><i>✓</i> Services and prices</div><div class="setup-row"><i>✓</i> Opening hours</div><div class="setup-row"><i>✓</i> Staff and availability</div><div class="setup-row"><i>✓</i> Common questions</div></div></div><h3>Show TWIGA how you work</h3><p>Share your services, prices, opening hours and booking rules. We help set it up around your business.</p></article>
         <article class="step-card"><div class="step-visual"><div class="step-number">03</div><div class="step-graphic activity-list"><div class="activity-head"><b>Today's activity</b><span>LIVE</span></div><div class="activity-row"><i class="activity-check">✓</i><span><b>Appointment booked</b><small>Aisha · Friday, 3:00 PM</small></span></div><div class="activity-row"><i class="activity-check">✓</i><span><b>Customer question answered</b><small>Opening hours</small></span></div><div class="activity-row"><i class="activity-follow">↗</i><span><b>Team follow-up</b><small>New enquiry received</small></span></div></div></div><h3>See what happened</h3><p>Check call activity, bookings and follow-ups. Your team gets the details they need to take the next step.</p></article>
       </div>
@@ -119,15 +143,19 @@
         <p>Customers get a helpful first response. You get fewer interruptions and more organised work.</p>
       </div>
       <div class="benefit-layout">
-        <div class="benefit-photo-wrap"><img src="/assets/kenyan-barbershop.webp" alt="African barber welcoming a customer at a modern barbershop" width="1600" height="1067" loading="lazy"><div class="photo-caption"><b>Made for the way local businesses work.</b><span>From the first call to the confirmed appointment.</span></div></div>
+        <div class="benefit-story">
+          <span class="benefit-story-kicker">MADE FOR KENYAN BUSINESS</span>
+          <h3>Made for the way local businesses work.</h3>
+          <p>Some days the phone rings while you are with a client, serving at the counter or out on a job. TWIGA gives callers a helpful first response and keeps the details ready for your team.</p>
+          <a class="benefit-story-link" href="#live-demo">Hear how TWIGA handles a call <b>↗</b></a>
+        </div>
         <div class="benefit-list">
           <article class="benefit-item"><span class="benefit-symbol">☎</span><div><h3>Answer calls, even when you're busy</h3><p>Give every caller a warm welcome while you focus on the customer in front of you.</p></div></article>
           <article class="benefit-item"><span class="benefit-symbol">✓</span><div><h3>Book appointments</h3><p>Check the times you make available, capture the service and confirm the booking rules you choose.</p></div></article>
           <article class="benefit-item"><span class="benefit-symbol">↻</span><div><h3>Follow up automatically</h3><p>Send reminders and help recover missed enquiries, so fewer customers are left waiting.</p></div></article>
           <article class="benefit-item"><span class="benefit-symbol">▤</span><div><h3>Keep your team in the loop</h3><p>See call notes, bookings and requests that need a real person to step in.</p></div></article>
         </div>
-      </div>
-    </section>    <section class="calendar-section" id="calendar">
+      </div>    </section>    <section class="calendar-section" id="calendar">
       <div class="calendar-wrap section">
         <div class="calendar-copy">
           <span class="eyebrow">YOUR DAY, MORE ORGANISED</span>
