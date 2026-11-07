@@ -1,0 +1,44 @@
+/* TWIGA brand refinements. Preserve the existing product direction; avoid generic UI patterns. */
+:root{--twiga-orange:#F47721;--twiga-ink:#111111;--twiga-paper:#FFFFFF;--twiga-muted:#F6F6F5}
+.apk-cta-wrap{display:flex;justify-content:center;width:min(100%,485px);margin:15px 0 0}
+.apk-cta{width:100%;display:flex;align-items:center;gap:13px;padding:12px 15px;border:1px solid #e9e5df;border-radius:15px;background:#fff;box-shadow:0 8px 24px rgba(17,17,17,.045);transition:transform .35s cubic-bezier(.22,1,.36,1),border-color .25s,box-shadow .25s}
+.apk-cta:hover{transform:translateY(-2px);border-color:rgba(244,119,33,.55);box-shadow:0 12px 28px rgba(17,17,17,.08)}
+.apk-cta:focus-visible{outline:3px solid rgba(244,119,33,.35);outline-offset:3px}
+.apk-cta-icon{width:36px;height:36px;flex:0 0 36px;border-radius:11px;display:grid;place-items:center;background:#fff1e8;color:#d96517;font-size:20px;font-weight:700}
+.apk-cta-copy{display:grid;gap:2px;min-width:0}
+.apk-cta-copy strong{font-size:12px;line-height:1.4;color:#171717}
+.apk-cta-copy small{font-size:10px;line-height:1.5;color:#77716a}
+.apk-cta-arrow{margin-left:auto;color:#d96517;font-size:16px}
+.what-section{display:grid;grid-template-columns:1.05fr .95fr;gap:80px;align-items:center;padding-top:90px;padding-bottom:90px}
+.what-copy h2{font:700 clamp(34px,4vw,50px)/1.06 var(--display);letter-spacing:-2.4px;margin:16px 0}
+.what-copy h2 em{font-style:normal;color:var(--orange)}
+.what-copy p{max-width:590px;color:#68635d;font-size:14px;line-height:1.85;margin:0 0 13px}
+.what-copy .text-link{display:inline-flex;margin-top:12px;font-size:12px;font-weight:800;color:#171717}
+.what-points{border-top:1px solid #e9e6e1}
+.what-points article{display:grid;grid-template-columns:42px 1fr;gap:15px;padding:22px 0;border-bottom:1px solid #e9e6e1}
+.what-points article>span{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:1px;padding-top:2px}
+.what-points b{font:700 15px/1.4 var(--display);color:#171717}
+.what-points p{font-size:12px;line-height:1.7;color:#77716a;margin:5px 0 0}
+.tagline-reveal{padding-top:28px;padding-bottom:95px}
+.tagline-reveal p{max-width:900px;margin:0;font:700 clamp(32px,5vw,58px)/1.12 var(--display);letter-spacing:-2.8px;color:#c9c7c3}
+.tagline-reveal p span{display:block;transition:color .8s cubic-bezier(.22,1,.36,1)}
+.tagline-reveal p span.is-active{color:#171717}
+.cursor-field{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.95}
+.hero-visual{--cursor-x:50%;--cursor-y:50%}
+.hero-visual:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(260px circle at var(--cursor-x) var(--cursor-y),rgba(244,119,33,.12),transparent 72%);opacity:0;transition:opacity .35s}
+.hero-visual.cursor-active:after{opacity:1}
+@media(max-width:760px){
+ .apk-cta-wrap{margin-top:12px;width:100%}
+ .apk-cta{padding:10px 12px}
+ .apk-cta-copy strong{font-size:11px}
+ .apk-cta-copy small{font-size:9px}
+ .what-section{grid-template-columns:1fr;gap:30px;padding-top:64px;padding-bottom:64px}
+ .what-copy h2{font-size:36px;letter-spacing:-1.8px}
+ .what-points article{padding:17px 0}
+ .tagline-reveal{padding-top:10px;padding-bottom:65px}
+ .tagline-reveal p{font-size:34px;letter-spacing:-1.6px}
+}
+@media(prefers-reduced-motion:reduce){
+ .apk-cta,.tagline-reveal p span,.hero-visual:after{transition:none}
+ .tagline-reveal p span{color:#171717}
+}
