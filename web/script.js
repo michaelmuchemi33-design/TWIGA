@@ -1,8 +1,11 @@
 import Vapi from "@vapi-ai/web";
+import { inject } from "@vercel/analytics";
 
 (() => {
   const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const $ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  inject();
 
   // Public Vapi key is intended for browser use. Never place a private Vapi key here.
   const VAPI_PUBLIC_KEY = import.meta.env.VITE_VAPI_PUBLIC_KEY || "3b23fdc9-f276-4fe8-9b99-5a2a1c5ae0e9";
