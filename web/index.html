@@ -58,6 +58,7 @@
 
   <main>
     <section class="hero" aria-labelledby="heroTitle">
+      <canvas class="cursor-field" id="cursorField" aria-hidden="true"></canvas>
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow"><span class="eyebrow-dot"></span> MADE FOR KENYAN BUSINESSES</div>
@@ -67,17 +68,10 @@
             <a class="btn btn-orange" href="https://app.twiga.co.ke/start">Start 7-day free trial <span aria-hidden="true">↗</span></a>
             <a class="btn btn-outline" href="#live-demo">Try a live call <span aria-hidden="true">↗</span></a>
           </div>
-          <div class="apk-cta-wrap">
-            <a class="apk-cta" id="apkDownloadHero" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">
-              <span class="apk-cta-icon" aria-hidden="true">↓</span>
-              <span class="apk-cta-copy"><strong>Get the TWIGA Android app</strong><small>Put your receptionist on your Android phone <span id="apkVersionHero"></span></small></span>
-              <span class="apk-cta-arrow" aria-hidden="true">↗</span>
-            </a>
-          </div>
           <div class="hero-proof"><span class="proof-icon">✓</span><span>Built around the business number your customers already know.</span></div>
         </div>
 
-        <div class="hero-visual" aria-label="TWIGA receptionist dashboard illustration"><canvas class="cursor-field" id="cursorField" aria-hidden="true"></canvas>
+        <div class="hero-visual" aria-label="TWIGA receptionist dashboard illustration">
           <div class="visual-glow"></div>
           <div class="visual-label"><span class="status-dot"></span> TWIGA RECEPTIONIST · ONLINE</div>
           <div class="handset-stage">
@@ -101,6 +95,14 @@
         </div>
       </div>
       <div class="hero-bottom"><span>ANSWER CALLS</span><i></i><span>TAKE BOOKINGS</span><i></i><span>FOLLOW UP</span><i></i><span>KEEP YOU INFORMED</span></div>
+    </section>
+
+    <section class="app-download-section" aria-label="Download the TWIGA Android app">
+      <a class="apk-cta" id="apkDownloadHero" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">
+        <span class="apk-cta-icon" aria-hidden="true">↓</span>
+        <span class="apk-cta-copy"><strong>Download the TWIGA Android app</strong><small>Get TWIGA on your Android phone <span id="apkVersionHero"></span></small></span>
+        <span class="apk-cta-arrow" aria-hidden="true">↗</span>
+      </a>
     </section>
 
     <section class="intro-strip" aria-label="The TWIGA promise">
