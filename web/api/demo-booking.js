@@ -37,7 +37,8 @@ export default async function handler(req, res) {
     const businessName = clean(body.business, 120);
     const phone = normalizeKenyanPhone(body.phone);
     const email = clean(body.email, 254).toLowerCase();
-    const preferredTime = clean(body.time || "Weekday morning", 80);
+    const preferredDate = clean(body.date, 10);
+    const preferredTime = clean(body.time, 5);
     const honeypot = clean(body.company_website, 200);
 
     if (fullName.length < 2 || businessName.length < 2 ||
@@ -64,6 +65,7 @@ export default async function handler(req, res) {
         p_business_name: businessName,
         p_phone: phone,
         p_email: email,
+        p_preferred_date: preferredDate,
         p_preferred_time: preferredTime,
         p_fingerprint: fingerprint,
         p_honeypot: honeypot
