@@ -207,6 +207,13 @@ import { inject } from "@vercel/analytics";
 
   // Demo requests are stored in the TWIGA Supabase database, not sent through a visitor's mail app.
   const demoForm = $("#demoRequest");
+  const demoDate = $("#demoDate");
+  if (demoDate) {
+    const today = new Date();
+    const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    demoDate.min = localToday;
+    demoDate.value = localToday;
+  }
   demoForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(demoForm).entries());
