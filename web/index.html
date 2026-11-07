@@ -16,9 +16,9 @@
   <meta property="og:description" content="An AI receptionist for Kenyan businesses. Answer calls, book appointments and follow up with customers automatically.">
   <meta property="og:image" content="https://twiga.co.ke/assets/kenyan-barbershop.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2"><link rel="shortcut icon" href="/favicon.svg?v=2">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png?v=2">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
 <body>
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="TWIGA home">
-      <span class="brand-mark" aria-hidden="true"><i></i></span>
+      <span class="brand-mark" aria-hidden="true"><img src="/twiga-mark.svg" alt=""></span>
       <span class="brand-word">TWIGA</span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
@@ -59,7 +59,7 @@
     <section class="hero" aria-labelledby="heroTitle">
       <div class="hero-grid">
         <div class="hero-copy">
-          <div class="eyebrow"><span class="eyebrow-dot"></span> MADE FOR BUSINESSES IN KENYA</div>
+          <div class="eyebrow"><span class="eyebrow-dot"></span> MADE FOR KENYAN BUSINESSES</div>
           <h1 id="heroTitle">Your business<br>should never miss<br><em>a customer.</em></h1>
           <p class="hero-lead">TWIGA answers your calls, books appointments and follows up with customers — even when you are busy serving someone else.</p>
           <div class="hero-actions">
@@ -69,14 +69,14 @@
           <div class="hero-proof"><span class="proof-icon">✓</span><span>Built around the business number your customers already know.</span></div>
         </div>
 
-        <div class="hero-visual" aria-label="A phone held in a hand with TWIGA receptionist notifications">
+        <div class="hero-visual" aria-label="TWIGA receptionist dashboard illustration"><canvas class="cursor-field" id="cursorField" aria-hidden="true"></canvas>
           <div class="visual-glow"></div>
           <div class="visual-label"><span class="status-dot"></span> TWIGA RECEPTIONIST · ONLINE</div>
           <div class="handset-stage">
-            <img class="handset-photo" src="/assets/phone-hand.webp" alt="A hand holding a smartphone for a TWIGA business call" width="850" height="1280" fetchpriority="high">
+            <div class="phone-device" aria-hidden="true"><div class="phone-camera"></div></div>
             <div class="screen-ui" aria-hidden="true">
               <div class="screen-notch"></div>
-              <div class="screen-brand"><span class="screen-brand-mark">T</span> TWIGA</div>
+              <div class="screen-brand"><span class="screen-brand-mark"><img src="/twiga-mark.svg" alt=""></span> TWIGA</div>
               <div class="screen-call-state"><span></span> AI RECEPTIONIST</div>
               <div class="screen-person">Aisha is calling</div>
               <div class="screen-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -96,12 +96,12 @@
     </section>
 
     <section class="intro-strip" aria-label="The TWIGA promise">
-      <div class="intro-strip-inner"><span class="strip-mark">T</span><p>Stay with your customers. <strong>TWIGA takes care of the phone.</strong></p><a href="#benefits">See what it can do <b>↘</b></a></div>
+      <div class="intro-strip-inner"><span class="strip-mark"><img src="/twiga-mark.svg" alt=""></span><p>Stay with your customers. <strong>TWIGA takes care of the phone.</strong></p><a href="#benefits">See what it can do <b>↘</b></a></div>
     </section>
 
     <section class="section how-section" id="how">
       <div class="section-heading">
-        <span class="eyebrow">SIMPLE TO GET STARTED</span>
+        <span class="eyebrow section-eyebrow">SIMPLE TO GET STARTED</span>
         <h2>Set it up once.<br><em>Let it help every day.</em></h2>
         <p>You do not need to be technical. Tell TWIGA how your business works, and we help connect the pieces.</p>
       </div>
@@ -173,8 +173,8 @@
           <div class="voice-picker"><label for="voiceChoice">Demo voice</label><select id="voiceChoice"><option value="EXAVITQu4vr4xnSDxMaL">Sarah · Warm and reassuring</option><option value="Xb7hH8MSUJpSbSDYk0k2">Alice · Clear and friendly</option><option value="hpp4J3VqNfWAUOO0d1Us">Bella · Bright and relaxed</option><option value="cgSgspJ2msm6clMCkdW9">Jessica · Confident and natural</option><option value="pFZP5JQG7iQjIQuC4Bku">Lily · Soft and welcoming</option></select></div>
         </div>
         <div class="live-console">
-          <div class="console-top"><div class="console-brand"><span class="console-mark">T</span><span><b>TWIGA</b><small>LIVE DEMO</small></span></div><div class="console-status" id="callStatus"><i></i><span>Ready when you are</span></div></div>
-          <div class="console-call"><div class="call-orb" id="callOrb"><span class="orb-mark">T</span></div><b id="callHeadline">Meet your AI receptionist</b><p id="callSubhead">Start the call and say hello. Ask to book a haircut for Friday afternoon.</p><div class="call-wave" id="callWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+          <div class="console-top"><div class="console-brand"><span class="console-mark"><img src="/twiga-mark.svg" alt=""></span><span><b>TWIGA</b><small>LIVE DEMO</small></span></div><div class="console-status" id="callStatus"><i></i><span>Ready when you are</span></div></div>
+          <div class="console-call"><div class="call-orb" id="callOrb"><span class="orb-mark"><img src="/twiga-mark.svg" alt=""></span></div><b id="callHeadline">Meet your AI receptionist</b><p id="callSubhead">Start the call and say hello. Ask to book a haircut for Friday afternoon.</p><div class="call-wave" id="callWave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
           <div class="console-actions"><button class="btn btn-orange" id="startCall"><span>●</span> Start live call</button><button class="btn btn-console" id="muteCall" disabled>Mute mic</button><button class="btn btn-end" id="endCall" disabled>End call</button></div>
           <div class="transcript-block"><div class="transcript-heading"><b>CONVERSATION</b><span id="transcriptMode">SAMPLE</span></div><div class="transcript-list" id="transcriptList" aria-live="polite">
             <div class="transcript-line customer-line"><b>AISHA</b><p>Hi. Can I get a cut on Friday afternoon?</p></div>
@@ -216,12 +216,12 @@
       </form>
     </section>
 
-    <section class="contact-section" id="contact">
+    <section class="section trust-section" id="success-stories"><div class="section-heading"><span class="eyebrow">BUILT TO EARN YOUR TRUST</span><h2>Small details.<br><em>Better customer care.</em></h2><p>We are inviting our first Kenyan businesses to share their TWIGA experience. Real customer stories will appear here with permission.</p></div><div class="trust-grid"><article><span class="trust-icon">☎</span><h3>Every call gets attention</h3><p>Give callers a clear, helpful first response—even during your busiest hours.</p></article><article><span class="trust-icon">✦</span><h3>Made for local teams</h3><p>Set up services, opening hours and the way your business speaks to customers.</p></article><article><span class="trust-icon">✓</span><h3>Keep work moving</h3><p>Capture bookings and follow-ups so your team knows what needs attention.</p></article><article><span class="trust-icon">↗</span><h3>You stay in control</h3><p>See activity and decide when a real person should take over.</p></article></div><p class="trust-note">Customer reviews and verified client numbers will be added as businesses complete onboarding and approve their stories.</p></section><section class="contact-section" id="contact">
       <div class="contact-inner section"><div><span class="eyebrow eyebrow-light">LET'S GET YOUR BUSINESS ANSWERED</span><h2>Give every caller<br>a better hello.</h2><p>Tell us what your business does. We'll show you the simplest way to get TWIGA working for you.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-white" href="https://app.twiga.co.ke/start">Start 7-day free trial <span>↗</span></a><a class="btn btn-white" href="#book-demo">Book a free demo <span>↗</span></a></div></div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="footer-inner section"><a class="brand footer-brand" href="#top"><span class="brand-mark"><i></i></span><span class="brand-word">TWIGA</span></a><p>AI receptionist for businesses in Kenya. Answer more calls, organise bookings and look after every enquiry.</p><nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">What it handles</a><a href="#businesses">Businesses</a><a href="#live-demo">Try TWIGA</a><a href="#contact">Talk to us</a><a href="https://app.twiga.co.ke/start">Start free trial</a><a id="apkDownload" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">Download Android app <span id="apkVersion"></span></a></nav><div class="footer-bottom"><span>© <span id="year"></span> TWIGA. All rights reserved.</span><span>Made for business in Kenya.</span></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner section"><a class="brand footer-brand" href="#top"><span class="brand-mark"><img src="/twiga-mark.svg" alt=""></span><span class="brand-word">TWIGA</span></a><p>AI receptionist for businesses in Kenya. Answer more calls, organise bookings and look after every enquiry.</p><nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">What it handles</a><a href="#businesses">Businesses</a><a href="#live-demo">Try TWIGA</a><a href="#contact">Talk to us</a><a href="https://app.twiga.co.ke/start">Start free trial</a><a id="apkDownload" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">Download Android app <span id="apkVersion"></span></a></nav><div class="footer-bottom"><span>© <span id="year"></span> TWIGA. All rights reserved.</span><span>Made for business in Kenya.</span></div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script type="module" src="/script.js"></script>
 </body>
