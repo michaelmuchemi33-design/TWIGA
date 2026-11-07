@@ -209,20 +209,23 @@ import Vapi from "@vapi-ai/web";
     const values = Object.fromEntries(new FormData(demoForm).entries());
     const subject = encodeURIComponent("TWIGA guided demo request - " + values.business);
     const body = encodeURIComponent(
-      "Please contact me to arrange a free TWIGA walkthrough.\\n\\n" +
-      "Name: " + values.name + "\\nBusiness: " + values.business +
-      "\\nPhone: " + values.phone + "\\nEmail: " + values.email +
-      "\\nPreferred time: " + values.time
+      "Please contact me to arrange a free TWIGA walkthrough.\n\n" +
+      "Name: " + values.name + "\nBusiness: " + values.business +
+      "\nPhone: " + values.phone + "\nEmail: " + values.email +
+      "\nPreferred time: " + values.time
     );
     $("#demoFormStatus").textContent = "Your email app is opening with the demo request. The team will confirm a time with you.";
     window.location.href = "mailto:support@twiga.co.ke?subject=" + subject + "&body=" + body;
   });
 
   // The APK URL stays stable; each successful release replaces the latest-apk asset.
-  fetch("https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/version.json?ts=" + Date.now(), { cache: "no-store" })
-    .then(response => { if (!response.ok) throw new Error("Version unavailable"); return response.json(); })
-    .then(info => {
-      if (info?.build) $("#apkVersion").textContent = " · v" + info.build;
+  fetch("https://api.github.com/repos/michaelmuchemi33-design/twiga-android-app/releases/tags/latest-apk", {
+    headers: { Accept: "application/vnd.github+json" }, cache: "no-store"
+  })
+    .then(response => { if (!response.ok) throw new Error("Latest release unavailable"); return response.json(); })
+    .then(release => {
+      const apk = (release.assets || []).find(asset => asset.name === "twiga.apk");
+      if (apk) $("#apkVersion").textContent = " · Latest · " + Math.round(apk.size / 1048576) + " MB";
     })
     .catch(() => {});
 
