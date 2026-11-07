@@ -58,5 +58,13 @@ const reveal=document.querySelector(".tagline-reveal");
 if(reveal){
   const words=[...reveal.querySelectorAll("span")];
   if(reduceMotion) words.forEach(w=>w.classList.add("is-active"));
-  else new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){words.forEach((w,i)=>setTimeout(()=>w.classList.add("is-active"),i*220));observer.unobserve(reveal);}}),{threshold:.45}).observe(reveal);
+  else {
+    const observer = new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        words.forEach((w,i)=>setTimeout(()=>w.classList.add("is-active"),i*220));
+        observer.unobserve(reveal);
+      }
+    }),{threshold:.45});
+    observer.observe(reveal);
+  }
 }
