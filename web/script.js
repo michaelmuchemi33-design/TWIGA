@@ -225,9 +225,98 @@ import Vapi from "@vapi-ai/web";
     .then(response => { if (!response.ok) throw new Error("Latest release unavailable"); return response.json(); })
     .then(release => {
       const apk = (release.assets || []).find(asset => asset.name === "twiga.apk");
-      if (apk) $("#apkVersion").textContent = " · Latest · " + Math.round(apk.size / 1048576) + " MB";
+      if (apk) {
+        const version = " · Latest · " + Math.round(apk.size / 1048576) + " MB";
+        if ($("#apkVersion")) $("#apkVersion").textContent = version;
+        if ($("#apkVersionHero")) $("#apkVersionHero").textContent = version;
+      }
     })
     .catch(() => {});
+
+
+  // Pointer field across the complete hero. It is intentionally disabled on touch devices.
+  const hero = $(".hero");
+  const cursorCanvas = $("#cursorField");
+  if (hero && cursorCanvas && !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const ctx = cursorCanvas.getContext("2d", { alpha: true });
+    let width = 0, height = 0, dpr = 1, raf = 0;
+    let pointer = { x: 0, y: 0, active: false };
+    let dots = [];
+    const resizeField = () => {
+      const rect = hero.getBoundingClientRect();
+      width = rect.width; height = rect.height;
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      cursorCanvas.width = Math.round(width * dpr);
+      cursorCanvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      dots = [];
+      const step = width < 700 ? 32 : 36;
+      for (let y = 16; y < height; y += step) {
+        for (let x = 16; x < width; x += step) dots.push({ x, y });
+      }
+      drawField();
+    };
+    const drawField = () => {
+      raf = 0;
+      ctx.clearRect(0, 0, width, height);
+      if (!pointer.active) return;
+      const radius = width < 700 ? 150 : 210;
+      const nearby = [];
+      for (const dot of dots) {
+        const dx = dot.x - pointer.x, dy = dot.y - pointer.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance < radius) {
+          const power = 1 - distance / radius;
+          const push = power * 9;
+          nearby.push({ x: dot.x + (distance ? dx / distance : 0) * push,
+            y: dot.y + (distance ? dy / distance : 0) * push, power });
+        }
+      }
+      ctx.lineWidth = .8;
+      for (let i = 0; i < nearby.length; i++) {
+        for (let j = i + 1; j < nearby.length; j++) {
+          const a = nearby[i], b = nearby[j];
+          const distance = Math.hypot(a.x - b.x, a.y - b.y);
+          if (distance < 42) {
+            ctx.strokeStyle = "rgba(244,119,33," +
+              (Math.min(a.power, b.power) * (1 - distance / 42) * .4) + ")";
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      for (const dot of nearby) {
+        ctx.beginPath(); ctx.arc(dot.x, dot.y, 1.1 + dot.power * .65, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(217,95,18," + (.18 + dot.power * .52) + ")";
+        ctx.fill();
+      }
+      const glow = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, radius);
+      glow.addColorStop(0, "rgba(244,119,33,.08)");
+      glow.addColorStop(1, "rgba(244,119,33,0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(pointer.x - radius, pointer.y - radius, radius * 2, radius * 2);
+      ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 12, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(244,119,33,.48)"; ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = "#F47721"; ctx.fill();
+    };
+    const scheduleDraw = () => { if (!raf) raf = requestAnimationFrame(drawField); };
+    hero.addEventListener("pointermove", event => {
+      if (event.pointerType === "touch") return;
+      const rect = hero.getBoundingClientRect();
+      pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top, active: true };
+      scheduleDraw();
+    }, { passive: true });
+    hero.addEventListener("pointerleave", () => {
+      pointer.active = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      ctx.clearRect(0, 0, width, height);
+    });
+    if ("ResizeObserver" in window) new ResizeObserver(resizeField).observe(hero);
+    else window.addEventListener("resize", resizeField, { passive: true });
+    resizeField();
+  }
 
   startButton.addEventListener("click", startLiveCall);
   endButton.addEventListener("click", endLiveCall);
