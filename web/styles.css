@@ -38,3 +38,48 @@
 .demo-form-note a{color:var(--orange-deep);font-weight:800;text-decoration:underline}
 .demo-form-status{font-weight:700}
 @media(max-width:760px){.demo-booking{grid-template-columns:1fr;gap:24px;padding-top:72px;padding-bottom:72px}.demo-booking-copy h2{font-size:40px}.demo-form{padding:19px;border-radius:16px}.demo-form-row{grid-template-columns:1fr}}
+
+/* TWIGA brand polish + cursor-reactive field */
+.brand-mark{width:42px;height:42px;border-radius:13px;padding:5px;box-shadow:0 5px 14px rgba(17,17,17,.12)}
+.brand-mark img,.strip-mark img,.screen-brand-mark img,.console-mark img,.orb-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.brand-word{font-size:26px;letter-spacing:-1.6px}
+.strip-mark{padding:5px}
+.screen-brand-mark{padding:2px}
+.console-mark{display:grid;place-items:center}
+.hero-visual{background:radial-gradient(ellipse at 52% 44%,#30251e 0,#191715 48%,#101010 100%)}
+.cursor-field{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.95}
+.handset-stage{z-index:2;width:430px;height:570px;top:35px}
+.phone-device{position:absolute;left:50%;top:10px;transform:translateX(-50%);width:258px;height:520px;border:8px solid #34312e;border-radius:42px;background:linear-gradient(145deg,#252321,#090909);box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 1px #655d55}
+.phone-device:before{content:"";position:absolute;inset:7px;border-radius:31px;background:radial-gradient(circle at 50% 25%,#39271c,#111 62%);border:1px solid rgba(255,255,255,.1)}
+.phone-camera{position:absolute;z-index:2;top:8px;left:50%;transform:translateX(-50%);width:78px;height:17px;border-radius:99px;background:#050505}
+.screen-ui{left:50%;top:34px;transform:translateX(-50%);width:236px;height:472px;border-radius:28px;padding:35px 19px 16px;background:linear-gradient(160deg,rgba(17,17,17,.98),rgba(27,21,17,.97));box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.screen-person{font-size:22px}
+.visual-label{z-index:5}
+.notice{z-index:6}
+.hero-visual:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:linear-gradient(120deg,transparent 20%,rgba(244,119,33,.06) 50%,transparent 80%)}
+.eyebrow{font-size:11px;letter-spacing:1.45px;line-height:1.6}
+.hero .eyebrow{font-size:12px;letter-spacing:1.8px}
+.hero-lead,.section-heading p,.step-card>p,.benefit-item p,.calendar-copy>p,.business-card p,.live-copy>p,.faq-list details p,.demo-booking-copy>p{font-size:15px;line-height:1.85}
+.section-heading h2{font-size:clamp(42px,4.4vw,58px);letter-spacing:-2.8px}
+.step-card h3,.benefit-item h3{font-size:19px}
+.step-card>p{font-size:14px}
+.benefit-symbol,.business-icon,.trust-icon{width:48px;height:48px;font-size:21px}
+.benefit-item{grid-template-columns:50px 1fr;gap:17px;padding:23px 0}
+.business-card{padding:28px}
+.business-card h3{font-size:19px}
+.business-card p{font-size:14px;line-height:1.8}
+.step-visual{height:225px}
+.step-graphic{padding:22px}
+.phone-forward b,.setup-title{font-size:13px}
+.phone-forward small,.setup-row,.activity-row b{font-size:11px}
+.activity-row small{font-size:10px}
+.trust-section{padding-top:88px;padding-bottom:88px}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.trust-grid article{border:1px solid var(--line);border-radius:18px;padding:25px 22px;background:linear-gradient(150deg,#fff,#fcfaf8);box-shadow:0 10px 30px rgba(0,0,0,.035)}
+.trust-icon{display:grid;place-items:center;border-radius:14px;background:var(--orange-soft);color:var(--orange);margin-bottom:18px}
+.trust-grid h3{font:800 17px var(--display);margin:0 0 8px}
+.trust-grid p,.trust-note{font-size:13px;line-height:1.8;color:#716b64;margin:0}
+.trust-note{text-align:center;margin:24px auto 0;max-width:760px;font-size:12px}
+@media(max-width:900px){.trust-grid{grid-template-columns:repeat(2,1fr)}.handset-stage{transform:translateX(-50%) scale(.88);transform-origin:top center}}
+@media(max-width:600px){.brand-mark{width:36px;height:36px}.brand-word{font-size:23px}.hero .eyebrow{font-size:10px;letter-spacing:1.3px}.hero-lead,.section-heading p,.step-card>p,.benefit-item p,.calendar-copy>p,.business-card p,.live-copy>p,.faq-list details p,.demo-booking-copy>p{font-size:13px}.section-heading h2{font-size:38px}.step-card h3,.benefit-item h3{font-size:17px}.trust-grid{grid-template-columns:1fr}.trust-grid article{padding:20px}.handset-stage{transform:translateX(-50%) scale(.76);transform-origin:top center;top:45px}.hero-visual{height:500px}}
+@media(prefers-reduced-motion:reduce){.cursor-field{display:none}}
