@@ -205,20 +205,31 @@ import { inject } from "@vercel/analytics";
     showToast(muted ? "Microphone muted." : "Microphone is on.");
   }
 
-  // Demo requests open a pre-filled email so the visitor can ask for a real scheduled walkthrough.
+  // Demo requests are stored in the TWIGA Supabase database, not sent through a visitor's mail app.
   const demoForm = $("#demoRequest");
-  demoForm?.addEventListener("submit", (event) => {
+  demoForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const values = Object.fromEntries(new FormData(demoForm).entries());
-    const subject = encodeURIComponent("TWIGA guided demo request - " + values.business);
-    const body = encodeURIComponent(
-      "Please contact me to arrange a free TWIGA walkthrough.\n\n" +
-      "Name: " + values.name + "\nBusiness: " + values.business +
-      "\nPhone: " + values.phone + "\nEmail: " + values.email +
-      "\nPreferred time: " + values.time
-    );
-    $("#demoFormStatus").textContent = "Your email app is opening with the demo request. The team will confirm a time with you.";
-    window.location.href = "mailto:support@twiga.co.ke?subject=" + subject + "&body=" + body;
+    const submit = demoForm.querySelector('button[type="submit"]');
+    const statusLine = $("#demoFormStatus");
+    if (submit) { submit.disabled = true; submit.textContent = "Sending request…"; }
+    statusLine.textContent = "Saving your demo request securely…";
+    try {
+      const response = await fetch("/api/demo-booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Please try again.");
+      demoForm.reset();
+      statusLine.textContent = result.message || "Your request has been received. The TWIGA team will contact you.";
+      showToast("Demo request received.");
+    } catch (error) {
+      statusLine.textContent = error?.message || "We couldn't save your request. Please try again.";
+    } finally {
+      if (submit) { submit.disabled = false; submit.innerHTML = 'Request my free demo <span aria-hidden="true">↗</span>'; }
+    }
   });
 
   // The APK URL stays stable; each successful release replaces the latest-apk asset.
@@ -227,8 +238,11 @@ import { inject } from "@vercel/analytics";
   })
     .then(response => { if (!response.ok) throw new Error("Latest release unavailable"); return response.json(); })
     .then(release => {
-      const apk = (release.assets || []).find(asset => asset.name === "twiga.apk");
+      const apk = (release.assets || []).find(asset => asset.name === "unity-ai-receptionist.apk");
       if (apk) {
+        const downloadUrl = apk.browser_download_url;
+        if ($("#apkDownload")) $("#apkDownload").href = downloadUrl;
+        if ($("#apkDownloadHero")) $("#apkDownloadHero").href = downloadUrl;
         const version = " · Latest · " + Math.round(apk.size / 1048576) + " MB";
         if ($("#apkVersion")) $("#apkVersion").textContent = version;
         if ($("#apkVersionHero")) $("#apkVersionHero").textContent = version;
