@@ -42,3 +42,5 @@
  .apk-cta,.tagline-reveal p span,.hero-visual:after{transition:none}
  .tagline-reveal p span{color:#171717}
 }
+
+.calendar-preview{display:inline-flex;align-items:center;gap:7px;font-size:9px;font-weight:800;color:#77716a}.calendar-preview i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#aaa39a}
