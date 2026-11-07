@@ -197,12 +197,30 @@
       </div>
     </section>
 
+    <section class="demo-booking section" id="book-demo">
+      <div class="demo-booking-copy">
+        <span class="eyebrow">A REAL PERSON CAN WALK YOU THROUGH IT</span>
+        <h2>Book a free<br><em>TWIGA walkthrough.</em></h2>
+        <p>Tell us a little about your business and the best number to reach you. Our team will contact you to agree on a demo time. This is a request, not an instant calendar confirmation.</p>
+        <div class="demo-benefits"><span>✓ See a live receptionist demo</span><span>✓ Plan your phone-line setup</span><span>✓ Get help connecting Google tools</span></div>
+      </div>
+      <form class="demo-form" id="demoRequest">
+        <label for="demoName">Your name</label><input id="demoName" name="name" autocomplete="name" required placeholder="Your full name">
+        <label for="demoBusiness">Business name</label><input id="demoBusiness" name="business" required placeholder="e.g. NILA Salon">
+        <div class="demo-form-row"><div><label for="demoPhone">Phone number</label><input id="demoPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+254 7xx xxx xxx"></div><div><label for="demoEmail">Email</label><input id="demoEmail" name="email" type="email" autocomplete="email" required placeholder="you@business.co.ke"></div></div>
+        <label for="demoTime">Best time to reach you</label><select id="demoTime" name="time"><option>Weekday morning</option><option>Weekday afternoon</option><option>Weekday evening</option><option>Saturday</option></select>
+        <button class="btn btn-orange" type="submit">Request my free demo <span aria-hidden="true">↗</span></button>
+        <p class="demo-form-note">Prefer to start immediately? <a href="https://app.twiga.co.ke/start">Create your workspace with Google</a> and add your business number.</p>
+        <p class="demo-form-status" id="demoFormStatus" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
     <section class="contact-section" id="contact">
-      <div class="contact-inner section"><div><span class="eyebrow eyebrow-light">LET'S GET YOUR BUSINESS ANSWERED</span><h2>Give every caller<br>a better hello.</h2><p>Tell us what your business does. We'll show you the simplest way to get TWIGA working for you.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-white" href="https://app.twiga.co.ke/start">Start 7-day free trial <span>↗</span></a><a class="btn btn-white" href="mailto:support@twiga.co.ke?subject=TWIGA%20business%20demo">Talk to the TWIGA team <span>↗</span></a></div></div>
+      <div class="contact-inner section"><div><span class="eyebrow eyebrow-light">LET'S GET YOUR BUSINESS ANSWERED</span><h2>Give every caller<br>a better hello.</h2><p>Tell us what your business does. We'll show you the simplest way to get TWIGA working for you.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-white" href="https://app.twiga.co.ke/start">Start 7-day free trial <span>↗</span></a><a class="btn btn-white" href="#book-demo">Book a free demo <span>↗</span></a></div></div>
     </section>
   </main>
 
-  <footer class="site-footer"><div class="footer-inner section"><a class="brand footer-brand" href="#top"><span class="brand-mark"><i></i></span><span class="brand-word">TWIGA</span></a><p>AI receptionist for businesses in Kenya. Answer more calls, organise bookings and look after every enquiry.</p><nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">What it handles</a><a href="#businesses">Businesses</a><a href="#live-demo">Try TWIGA</a><a href="#contact">Talk to us</a><a href="https://app.twiga.co.ke/start">Start free trial</a></nav><div class="footer-bottom"><span>© <span id="year"></span> TWIGA. All rights reserved.</span><span>Made for business in Kenya.</span></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner section"><a class="brand footer-brand" href="#top"><span class="brand-mark"><i></i></span><span class="brand-word">TWIGA</span></a><p>AI receptionist for businesses in Kenya. Answer more calls, organise bookings and look after every enquiry.</p><nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">What it handles</a><a href="#businesses">Businesses</a><a href="#live-demo">Try TWIGA</a><a href="#contact">Talk to us</a><a href="https://app.twiga.co.ke/start">Start free trial</a><a href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk">Download Android app</a></nav><div class="footer-bottom"><span>© <span id="year"></span> TWIGA. All rights reserved.</span><span>Made for business in Kenya.</span></div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script type="module" src="/script.js"></script>
 </body>
