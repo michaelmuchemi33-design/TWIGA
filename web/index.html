@@ -233,7 +233,7 @@
       <div class="demo-booking-copy">
         <span class="eyebrow">A REAL PERSON CAN WALK YOU THROUGH IT</span>
         <h2>Book a free<br><em>TWIGA walkthrough.</em></h2>
-        <p>Tell us a little about your business and the best number to reach you. Our team will contact you to agree on a demo time. This is a request, not an instant calendar confirmation.</p>
+        <p>Choose a preferred demo date and time, and tell us how to reach you. We will confirm the appointment with you before it is booked.</p>
         <div class="demo-benefits"><span>✓ See a live receptionist demo</span><span>✓ Plan your phone-line setup</span><span>✓ Get help connecting Google tools</span></div>
       </div>
       <form class="demo-form" id="demoRequest">
@@ -241,7 +241,7 @@
         <label for="demoName">Your name</label><input id="demoName" name="name" autocomplete="name" required placeholder="Your full name">
         <label for="demoBusiness">Business name</label><input id="demoBusiness" name="business" required placeholder="e.g. NILA Salon">
         <div class="demo-form-row"><div><label for="demoPhone">Phone number</label><input id="demoPhone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required placeholder="+254 7xx xxx xxx"></div><div><label for="demoEmail">Email</label><input id="demoEmail" name="email" type="email" autocomplete="email" required placeholder="you@business.co.ke"></div></div>
-        <label for="demoTime">Best time to reach you</label><select id="demoTime" name="time"><option>Weekday morning</option><option>Weekday afternoon</option><option>Weekday evening</option><option>Saturday</option></select>
+        <div class="demo-form-row"><div><label for="demoDate">Preferred demo date</label><input id="demoDate" name="date" type="date" required></div><div><label for="demoTime">Preferred time (EAT)</label><select id="demoTime" name="time" required><option value="09:00">9:00 AM</option><option value="10:30">10:30 AM</option><option value="12:00">12:00 PM</option><option value="14:00">2:00 PM</option><option value="15:30">3:30 PM</option></select></div></div>
         <button class="btn btn-orange" type="submit">Request my free demo <span aria-hidden="true">↗</span></button>
         <p class="demo-form-note">Prefer to start immediately? <a href="https://app.twiga.co.ke/start">Create your workspace with Google</a> and add your business number.</p>
         <p class="demo-form-status" id="demoFormStatus" role="status" aria-live="polite"></p>
