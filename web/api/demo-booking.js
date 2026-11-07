@@ -41,10 +41,19 @@ export default async function handler(req, res) {
     const preferredTime = clean(body.time, 5);
     const honeypot = clean(body.company_website, 200);
 
+    const parsedDate = new Date(preferredDate + "T00:00:00Z");
+    const today = new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
+    const validDate = /^\d{4}-\d{2}-\d{2}$/.test(preferredDate) &&
+      !Number.isNaN(parsedDate.getTime()) &&
+      parsedDate.toISOString().slice(0, 10) === preferredDate &&
+      parsedDate >= today;
+    const validTime = ["09:00", "10:30", "12:00", "14:00", "15:30"].includes(preferredTime);
+
     if (fullName.length < 2 || businessName.length < 2 ||
         !/^254[17]\d{8}$/.test(phone) ||
-        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return res.status(400).json({ error: "Please enter your name, business, a valid Kenyan phone number and a valid email." });
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+        !validDate || !validTime) {
+      return res.status(400).json({ error: "Please enter your name, business, valid Kenyan phone and email, and choose a future demo date and time." });
     }
 
     // Store only a one-way fingerprint for optional abuse throttling; never store the raw IP.
