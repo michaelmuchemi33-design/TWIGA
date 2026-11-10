@@ -27,3 +27,25 @@ jobs:
         run: npm install --prefix web --no-audit --no-fund
       - name: Build Vite website
         run: npm run build --prefix web
+      - name: Verify the live latest-APK endpoint
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          status=""
+          for attempt in $(seq 1 18); do
+            status=$(curl --silent --show-error --max-time 12 --output /tmp/twiga-apk.json --write-out "%{http_code}" https://twiga.co.ke/api/latest-apk 2>/dev/null || true)
+            if [ "$status" = "200" ]; then break; fi
+            echo "Waiting for the Vercel deployment to expose /api/latest-apk (attempt $attempt, HTTP ${status:-network-error})"
+            sleep 5
+          done
+          test "$status" = "200" || { cat /tmp/twiga-apk.json 2>/dev/null || true; exit 1; }
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const data = JSON.parse(fs.readFileSync("/tmp/twiga-apk.json", "utf8"));
+            if (data.available !== true) throw new Error("Latest APK endpoint says no APK is available");
+            if (!data.downloadUrl?.includes("/twiga-business-assistant-latest/twiga-business-assistant.apk")) throw new Error("Wrong APK download URL");
+            if (!(Number(data.sizeBytes) > 70000000)) throw new Error("APK size is missing or unexpectedly small");
+            if (!data.versionName || !(Number(data.versionCode) > 0)) throw new Error("APK version metadata is incomplete");
+            if (data.minimumAndroidVersion !== "7.0") throw new Error("Unexpected minimum Android version");
+            console.log(JSON.stringify({version:data.versionName,versionCode:data.versionCode,sizeBytes:data.sizeBytes,minimumAndroid:data.minimumAndroidVersion,downloadUrl:data.downloadUrl},null,2));
+          '
