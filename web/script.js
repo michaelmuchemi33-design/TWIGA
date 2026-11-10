@@ -239,23 +239,46 @@ import { inject } from "@vercel/analytics";
     }
   });
 
-  // The APK URL stays stable; each successful release replaces the latest-apk asset.
-  fetch("https://api.github.com/repos/michaelmuchemi33-design/twiga-android-app/releases/tags/latest-apk", {
-    headers: { Accept: "application/vnd.github+json" }, cache: "no-store"
-  })
-    .then(response => { if (!response.ok) throw new Error("Latest release unavailable"); return response.json(); })
-    .then(release => {
-      const apk = (release.assets || []).find(asset => asset.name === "unity-ai-receptionist.apk");
-      if (apk) {
-        const downloadUrl = apk.browser_download_url;
-        if ($("#apkDownload")) $("#apkDownload").href = downloadUrl;
-        if ($("#apkDownloadHero")) $("#apkDownloadHero").href = downloadUrl;
-        const version = " · Latest · " + Math.round(apk.size / 1048576) + " MB";
-        if ($("#apkVersion")) $("#apkVersion").textContent = version;
-        if ($("#apkVersionHero")) $("#apkVersionHero").textContent = version;
+  // The download address is a stable GitHub Release asset. This same-origin
+  // endpoint reads the current release metadata, so new Android builds update the
+  // website's version and file size without a separate website edit or redeploy.
+  const apkDownload = $("#apkDownloadHero");
+  const apkVersion = $("#apkVersionHero");
+  const apkNote = $("#apkDownloadNote");
+  const latestApkFallback = "https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/twiga-business-assistant-latest/twiga-business-assistant.apk";
+  if (apkDownload) apkDownload.href = latestApkFallback;
+
+  fetch("/api/latest-apk", { headers: { Accept: "application/json" }, cache: "no-store" })
+    .then(response => {
+      if (!response.ok) throw new Error("Latest APK metadata is unavailable");
+      return response.json();
+    })
+    .then(app => {
+      if (!app.available || !app.downloadUrl) throw new Error("No published APK is available");
+      if (apkDownload) apkDownload.href = app.downloadUrl;
+      const sizeMb = Math.max(1, Math.round((Number(app.sizeBytes) || 0) / 1048576));
+      const versionLabel = [
+        app.versionName ? "v" + app.versionName : "Latest",
+        sizeMb + " MB",
+        "Android " + (app.minimumAndroidVersion || "7.0") + "+"
+      ].join(" · ");
+      if (apkVersion) apkVersion.textContent = versionLabel;
+      if (apkNote) {
+        const updated = app.updatedAt ? new Date(app.updatedAt) : null;
+        const date = updated && !Number.isNaN(updated.getTime())
+          ? " · Updated " + updated.toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })
+          : "";
+        apkNote.textContent = "Latest TWIGA Business Assistant APK" + date +
+          (app.sha256 ? " · SHA-256 checksum published" : "") + ".";
+      }
+      if (apkDownload) {
+        apkDownload.setAttribute("aria-label", "Download TWIGA Business Assistant " + (app.versionName || "latest version") + " for Android");
       }
     })
-    .catch(() => {});
+    .catch(() => {
+      if (apkVersion) apkVersion.textContent = "Latest APK · Android 7.0+";
+      if (apkNote) apkNote.textContent = "The stable latest-release download address remains available while version details refresh.";
+    });
 
 
   // Pointer field across the complete hero. It is intentionally disabled on touch devices.
