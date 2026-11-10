@@ -74,7 +74,7 @@ Deno.serve(async (req:Request) => {
     const membership=memberResult.data, isPlatformAdmin=!!adminResult.data;
     if(!membership && !isPlatformAdmin) return reply({error:"You are not authorised for this business."},403);
     const canManage=isPlatformAdmin || ["owner","admin"].includes(String(membership?.role || ""));
-    if(["save_key","save_settings","link_existing_agent","provision_agent"].includes(action) && !canManage)
+    if(["save_key","save_settings","list_agents","link_existing_agent","provision_agent"].includes(action) && !canManage)
       return reply({error:"Only the business owner, business admin or TWIGA platform admin can change AI settings."},403);
 
     if(action==="get_config") {
@@ -92,6 +92,31 @@ Deno.serve(async (req:Request) => {
         aiBridgeNumber:lineResult.data?.number || "",
         canManage,isPlatformAdmin
       });
+    }
+
+    if(action==="list_agents") {
+      const {data:secret,error:secretError}=await admin.rpc("twiga_get_provider_secret",{p_business_id:businessId,p_provider:"retell"});
+      if(secretError || !secret) return reply({error:"Connect a valid Retell key for this business first."},400);
+      const agents:Row[]=[];
+      let paginationKey="";
+      for(let page=0;page<5;page++) {
+        const query=new URLSearchParams({limit:"100"});
+        if(paginationKey) query.set("pagination_key",paginationKey);
+        const result=await retell(String(secret),"/v2/list-agents?"+query.toString(),"POST",{
+          filter_criteria:{channel:{op:"eq",value:"voice"}}
+        });
+        if(!result.ok) return reply({error:"Could not list Retell voice agents: "+result.message},502);
+        const rows=Array.isArray(result.data.items)?result.data.items:[];
+        agents.push(...rows);
+        if(!result.data.has_more || !result.data.pagination_key) break;
+        paginationKey=String(result.data.pagination_key);
+      }
+      return reply({agents:agents.map(agent=>({
+        agent_id:String(agent.agent_id||""),
+        agent_name:String(agent.agent_name||"Unnamed Retell agent"),
+        channel:String(agent.channel||"voice"),
+        user_modified_timestamp:agent.user_modified_timestamp||null
+      })).filter(agent=>agent.agent_id)});
     }
 
     if(action==="list_phone_numbers") {
