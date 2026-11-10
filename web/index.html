@@ -257,6 +257,36 @@
 
   <footer class="site-footer"><div class="footer-inner section"><a class="brand footer-brand" href="#top"><span class="brand-mark"><img src="/twiga-mark.svg" alt=""></span><span class="brand-word">TWIGA</span></a><p>AI receptionist for businesses in Kenya. Answer more calls, organise bookings and look after every enquiry.</p><nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#benefits">What it handles</a><a href="#businesses">Businesses</a><a href="#live-demo">Try TWIGA</a><a href="#contact">Talk to us</a><a href="https://app.twiga.co.ke/start">Start free trial</a><a id="apkDownload" href="https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/twiga-business-assistant-latest/twiga-business-assistant.apk">Download TWIGA Android app <span id="apkVersion"></span></a></nav><div class="footer-bottom"><span>© <span id="year"></span> TWIGA. All rights reserved.</span><span>Made for business in Kenya.</span></div></div></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <aside class="twiga-support" id="twigaSupport" aria-label="TWIGA customer support">
+    <button class="twiga-support-toggle" id="twigaSupportToggle" type="button" aria-expanded="false" aria-controls="twigaSupportPanel">
+      <span class="twiga-support-toggle-icon" aria-hidden="true">✦</span><span>Chat with TWIGA support</span>
+    </button>
+    <section class="twiga-support-panel" id="twigaSupportPanel" hidden aria-label="TWIGA support chat">
+      <header class="twiga-support-header">
+        <div><span class="twiga-support-status-dot"></span><strong>TWIGA Support</strong><small>Quick answers and human help</small></div>
+        <button class="twiga-support-close" id="twigaSupportClose" type="button" aria-label="Close support chat">×</button>
+      </header>
+      <div class="twiga-support-messages" id="twigaSupportMessages" aria-live="polite">
+        <div class="twiga-support-message assistant">Hello! I’m TWIGA Support. Ask about getting started, the Android app, voice setup or payments.</div>
+      </div>
+      <form class="twiga-support-chat-form" id="twigaSupportChatForm">
+        <label class="sr-only" for="twigaSupportInput">Your support question</label>
+        <input id="twigaSupportInput" name="question" maxlength="2000" autocomplete="off" placeholder="Type your question…" required>
+        <button type="submit" aria-label="Send message">Send</button>
+      </form>
+      <button class="twiga-support-human-link" id="twigaSupportHuman" type="button">Need a person? Open a support request</button>
+      <form class="twiga-support-ticket-form" id="twigaSupportTicketForm" hidden>
+        <label for="twigaTicketSubject">Subject</label>
+        <input id="twigaTicketSubject" name="subject" maxlength="120" required placeholder="What do you need help with?">
+        <label for="twigaTicketMessage">Describe the issue</label>
+        <textarea id="twigaTicketMessage" name="message" maxlength="3000" rows="3" required placeholder="Tell us what happened…"></textarea>
+        <label for="twigaTicketContact">Email or WhatsApp number (optional)</label>
+        <input id="twigaTicketContact" name="contact" maxlength="160" placeholder="How can we reach you?">
+        <div class="twiga-support-ticket-actions"><button type="button" id="twigaTicketCancel">Cancel</button><button type="submit">Send request</button></div>
+      </form>
+      <p class="twiga-support-footnote">Never share your password, OTP or M-Pesa PIN in chat.</p>
+    </section>
+  </aside>
   <script type="module" src="/script.js"></script>
 </body>
 </html>
