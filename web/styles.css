@@ -114,6 +114,9 @@ body{overflow-x:hidden}
 .apk-download-copy strong{font-size:14px;line-height:20px;font-weight:700}
 .apk-download-copy small{font-size:12px;line-height:18px;color:#706b65}
 .apk-download-arrow{margin-left:auto;color:#d95f12;font-size:18px}
+.apk-download-note{width:min(100%,510px);margin:9px auto 0;color:#77716b;text-align:center;font-size:11px;line-height:1.6}
+.apk-download-hero[aria-busy="true"]{opacity:.72;pointer-events:none}
+
 .benefit-layout{grid-template-columns:.88fr 1.12fr;gap:clamp(36px,6vw,82px);align-items:start}
 .benefit-story{padding:12px 0 0;max-width:470px}
 .benefit-story-kicker{font-size:10px;letter-spacing:1.5px;font-weight:700;color:#d96a22}
