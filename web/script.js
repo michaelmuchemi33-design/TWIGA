@@ -371,6 +371,133 @@ import { inject } from "@vercel/analytics";
     resizeField();
   }
 
+
+  // Public TWIGA help chat: all Grok credentials stay inside the Supabase Edge Function.
+  const supportToggle = $("#twigaSupportToggle");
+  const supportPanel = $("#twigaSupportPanel");
+  const supportClose = $("#twigaSupportClose");
+  const supportMessages = $("#twigaSupportMessages");
+  const supportChatForm = $("#twigaSupportChatForm");
+  const supportInput = $("#twigaSupportInput");
+  const supportHuman = $("#twigaSupportHuman");
+  const supportTicketForm = $("#twigaSupportTicketForm");
+  const supportTicketCancel = $("#twigaTicketCancel");
+  const supportHistory = [{
+    role: "assistant",
+    content: "Hello! I’m TWIGA Support. Ask about getting started, the Android app, voice setup or payments."
+  }];
+  const supportEndpoint = "https://ztyxxikkposfpxsutnfr.supabase.co/functions/v1/twiga-ai-support";
+  const supportPublishableKey = "sb_publishable_Zex31DUxW6bX3LP6Wlos2Q_pMiZ_JeT";
+
+  function renderSupportMessages() {
+    if (!supportMessages) return;
+    supportMessages.replaceChildren();
+    supportHistory.slice(-16).forEach(item => {
+      const bubble = document.createElement("div");
+      bubble.className = "twiga-support-message " + (item.role === "user" ? "user" : "assistant");
+      bubble.textContent = item.content;
+      supportMessages.appendChild(bubble);
+    });
+    supportMessages.scrollTop = supportMessages.scrollHeight;
+  }
+
+  async function postSupport(payload) {
+    const response = await fetch(supportEndpoint, {
+      method: "POST",
+      headers: {
+        "apikey": supportPublishableKey,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(35000)
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.error || "Support is temporarily unavailable.");
+      error.code = data.code || "";
+      error.status = response.status;
+      throw error;
+    }
+    return data;
+  }
+
+  function setSupportOpen(open) {
+    if (!supportPanel || !supportToggle) return;
+    supportPanel.hidden = !open;
+    supportToggle.setAttribute("aria-expanded", String(open));
+    supportToggle.querySelector("span:last-child").textContent = open ? "Close support" : "Chat with TWIGA support";
+    if (open) window.setTimeout(() => supportInput?.focus(), 80);
+  }
+
+  supportToggle?.addEventListener("click", () => setSupportOpen(supportPanel?.hidden !== false));
+  supportClose?.addEventListener("click", () => setSupportOpen(false));
+
+  supportChatForm?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const question = String(supportInput?.value || "").trim();
+    if (!question) return;
+    const sendButton = supportChatForm.querySelector("button[type=submit]");
+    if (sendButton?.disabled) return;
+    supportHistory.push({ role: "user", content: question });
+    supportInput.value = "";
+    if (sendButton) { sendButton.disabled = true; sendButton.textContent = "…"; }
+    renderSupportMessages();
+    try {
+      const data = await postSupport({ action: "chat", channel: "website", messages: supportHistory.slice(-8) });
+      supportHistory.push({ role: "assistant", content: data.answer || "I could not prepare an answer. Please open a support request." });
+    } catch (error) {
+      const message = error.code === "support_ai_not_configured"
+        ? "AI replies are being connected. You can still send a support request to the TWIGA team below."
+        : error.status === 429
+          ? "You have sent several messages. Please wait a minute before trying again."
+          : error.message || "I can’t reach support right now. Please try again or open a support request.";
+      supportHistory.push({ role: "assistant", content: message });
+    } finally {
+      if (sendButton) { sendButton.disabled = false; sendButton.textContent = "Send"; }
+      renderSupportMessages();
+    }
+  });
+
+  supportHuman?.addEventListener("click", () => {
+    if (supportTicketForm) {
+      supportTicketForm.hidden = false;
+      supportHuman.hidden = true;
+      $("#twigaTicketSubject")?.focus();
+    }
+  });
+  supportTicketCancel?.addEventListener("click", () => {
+    if (supportTicketForm) supportTicketForm.hidden = true;
+    if (supportHuman) supportHuman.hidden = false;
+  });
+  supportTicketForm?.addEventListener("submit", async event => {
+    event.preventDefault();
+    const submit = supportTicketForm.querySelector("button[type=submit]");
+    const subject = $("#twigaTicketSubject")?.value.trim() || "";
+    const message = $("#twigaTicketMessage")?.value.trim() || "";
+    const contact = $("#twigaTicketContact")?.value.trim() || "";
+    if (!subject || !message || submit?.disabled) return;
+    submit.disabled = true;
+    submit.textContent = "Sending…";
+    try {
+      const data = await postSupport({ action: "ticket", channel: "website", subject, message, contact });
+      supportHistory.push({
+        role: "assistant",
+        content: "Your support request has been saved. Reference: " + (data.ticket?.id || "received") + ". Thank you — the TWIGA team can follow up."
+      });
+      supportTicketForm.reset();
+      supportTicketForm.hidden = true;
+      if (supportHuman) supportHuman.hidden = false;
+      renderSupportMessages();
+    } catch (error) {
+      supportHistory.push({ role: "assistant", content: error.message || "Your request could not be sent. Please try again." });
+      renderSupportMessages();
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Send request";
+    }
+  });
+
   startButton.addEventListener("click", startLiveCall);
   endButton.addEventListener("click", endLiveCall);
   muteButton.addEventListener("click", toggleMute);
