@@ -243,3 +243,41 @@ p{text-wrap:pretty}
 @media(max-width:760px){.site-header{grid-template-columns:minmax(0,1fr) auto auto auto}.header-login{display:inline-flex;align-items:center;justify-content:center;font-size:10px}.header-cta{display:inline-flex;white-space:nowrap;padding:10px 12px;font-size:10px}}
 
 @media(max-width:380px){.site-header{width:calc(100% - 24px);gap:6px}.brand-word{font-size:18px}.header-login{font-size:9px}.header-cta{padding:8px 9px;font-size:9px}}
+
+
+/* TWIGA live website support — compact, accessible and mobile friendly. */
+.twiga-support{position:fixed;right:24px;bottom:22px;z-index:1000;font-family:var(--font)}
+.twiga-support [hidden]{display:none!important}
+.twiga-support-toggle{display:flex;align-items:center;gap:10px;min-height:54px;padding:0 19px;border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:12px;font-weight:800;box-shadow:0 12px 34px rgba(0,0,0,.2)}
+.twiga-support-toggle:hover{background:#292929;transform:translateY(-1px)}
+.twiga-support-toggle-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--orange);color:#fff;font-size:16px}
+.twiga-support-panel{position:absolute;right:0;bottom:68px;display:flex;flex-direction:column;width:min(380px,calc(100vw - 32px));height:min(590px,calc(100dvh - 120px));min-height:390px;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:#f8f7f5;box-shadow:0 20px 70px rgba(0,0,0,.24)}
+.twiga-support-header{display:flex;align-items:center;justify-content:space-between;padding:17px 18px;background:#171717;color:#fff}
+.twiga-support-header>div{display:grid;grid-template-columns:10px 1fr;align-items:center;column-gap:9px}
+.twiga-support-header strong{font-size:14px}
+.twiga-support-header small{grid-column:2;color:#c5c0ba;font-size:10px}
+.twiga-support-status-dot{width:8px;height:8px;border-radius:50%;background:#68c58c;box-shadow:0 0 0 4px rgba(104,197,140,.13)}
+.twiga-support-close{border:0;background:transparent;color:#fff;font-size:26px;line-height:1;padding:0 3px}
+.twiga-support-messages{flex:1;display:flex;flex-direction:column;gap:10px;overflow:auto;padding:16px 13px}
+.twiga-support-message{max-width:88%;padding:11px 13px;border-radius:14px;font-size:12px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.twiga-support-message.assistant{align-self:flex-start;background:#fff;border:1px solid #ece9e5;color:#24211f;border-bottom-left-radius:5px}
+.twiga-support-message.user{align-self:flex-end;background:#fff0e5;border:1px solid #f7d7c2;color:#2b2119;border-bottom-right-radius:5px}
+.twiga-support-chat-form{display:flex;gap:8px;padding:11px 12px;background:#fff;border-top:1px solid var(--line)}
+.twiga-support-chat-form input,.twiga-support-ticket-form input,.twiga-support-ticket-form textarea{width:100%;min-width:0;padding:11px 12px;border:1px solid #e4e0db;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:12px;outline:none}
+.twiga-support-chat-form input:focus,.twiga-support-ticket-form input:focus,.twiga-support-ticket-form textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(244,119,33,.12)}
+.twiga-support-chat-form button,.twiga-support-ticket-actions button[type=submit]{border:0;border-radius:10px;padding:0 16px;background:var(--orange);color:#fff;font-size:12px;font-weight:800}
+.twiga-support-chat-form button:disabled,.twiga-support-ticket-actions button:disabled{opacity:.55;cursor:wait}
+.twiga-support-human-link{align-self:flex-start;margin:0 12px 10px;padding:4px 0;border:0;background:transparent;color:#8b471e;font-size:11px;font-weight:700;text-align:left;text-decoration:underline;text-underline-offset:3px}
+.twiga-support-ticket-form{display:grid;gap:6px;padding:12px;background:#fff;border-top:1px solid var(--line)}
+.twiga-support-ticket-form label{font-size:10px;font-weight:800;color:#514d48}
+.twiga-support-ticket-form textarea{resize:vertical}
+.twiga-support-ticket-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:5px}
+.twiga-support-ticket-actions button{min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:11px;font-weight:700}
+.twiga-support-ticket-actions button[type=submit]{border:0;background:var(--orange);color:#fff}
+.twiga-support-footnote{margin:0;padding:7px 12px 10px;background:#fff;color:#77716a;font-size:9px;text-align:center}
+.twiga-support .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:520px){
+ .twiga-support{right:12px;bottom:12px}
+ .twiga-support-toggle{min-height:48px;padding:0 15px;font-size:11px}
+ .twiga-support-panel{right:0;bottom:58px;width:min(380px,calc(100vw - 24px));height:min(590px,calc(100dvh - 92px));min-height:360px}
+}
