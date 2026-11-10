@@ -22,11 +22,17 @@ jobs:
       - name: Check website JavaScript syntax
         run: |
           node --check web/script.js
+          node --check web/admin/admin.js
           node --check web/api/latest-apk.js
       - name: Install website dependencies
         run: npm install --prefix web --no-audit --no-fund
       - name: Build Vite website
         run: npm run build --prefix web
+      - name: Verify legal and admin pages are included in the production bundle
+        run: |
+          test -s web/dist/privacy.html
+          test -s web/dist/terms.html
+          test -s web/dist/admin/index.html
       - name: Verify the live latest-APK endpoint
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
