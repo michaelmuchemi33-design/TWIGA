@@ -74,7 +74,7 @@ Deno.serve(async (req:Request) => {
     const membership=memberResult.data, isPlatformAdmin=!!adminResult.data;
     if(!membership && !isPlatformAdmin) return reply({error:"You are not authorised for this business."},403);
     const canManage=isPlatformAdmin || ["owner","admin"].includes(String(membership?.role || ""));
-    if(["save_key","save_settings","provision_agent"].includes(action) && !canManage)
+    if(["save_key","save_settings","link_existing_agent","provision_agent"].includes(action) && !canManage)
       return reply({error:"Only the business owner, business admin or TWIGA platform admin can change AI settings."},403);
 
     if(action==="get_config") {
@@ -146,7 +146,7 @@ Deno.serve(async (req:Request) => {
       if(recordingSaveError) throw recordingSaveError;
       if(Object.prototype.hasOwnProperty.call(body,"bridgeNumber")) {
         const bridgeNumber=String(body.bridgeNumber || "").trim();
-        if(bridgeNumber && !/^\\+[1-9][0-9]{6,14}$/.test(bridgeNumber))
+        if(bridgeNumber && !(bridgeNumber.startsWith("+") && /^[1-9][0-9]{6,14}$/.test(bridgeNumber.slice(1))))
           return reply({error:"The AI bridge number must be in international E.164 format, for example +2547XXXXXXXX."},400);
         if(bridgeNumber) {
           const {data:claimed,error:claimError}=await admin.from("ai_lines").select("business_id").eq("number",bridgeNumber).maybeSingle();
@@ -157,9 +157,6 @@ Deno.serve(async (req:Request) => {
           if(deleteError) throw deleteError;
           const {error:lineError}=await admin.from("ai_lines").insert({number:bridgeNumber,business_id:businessId});
           if(lineError) throw lineError;
-        } else {
-          const {error:deleteError}=await admin.from("ai_lines").delete().eq("business_id",businessId);
-          if(deleteError) throw deleteError;
         }
       }
       let recordingAppliedToAgent=false;
