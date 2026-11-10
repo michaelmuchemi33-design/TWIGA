@@ -194,8 +194,20 @@ Deno.serve(async (req:Request) => {
           signed_url_expiration_ms:86400000
         });
         if(!agentUpdate.ok) return reply({error:"Settings were saved, but Retell could not apply the recording preference to the current agent: "+agentUpdate.message},502);
-        const published=await retell(String(retellSecret),"/publish-agent","POST",{agent_id:String(savedResult.data.retell_agent_id)});
-        if(!published.ok) return reply({error:"Recording preference was updated in Retell's draft but could not be published. Re-open AI settings and build the assistant again."},502);
+        let recordingDraftVersion=Number(agentUpdate.data?.version);
+        if(!Number.isInteger(recordingDraftVersion) || recordingDraftVersion<0) {
+          const latest=await retell(String(retellSecret),"/get-agent/"+encodeURIComponent(String(savedResult.data.retell_agent_id)));
+          if(!latest.ok) return reply({error:"Recording preference was updated in Retell's draft but its version could not be read for publishing."},502);
+          recordingDraftVersion=Number(latest.data.version);
+        }
+        if(!Number.isInteger(recordingDraftVersion) || recordingDraftVersion<0)
+          return reply({error:"Recording preference was updated in Retell's draft but no valid draft version was returned."},502);
+        const published=await retell(String(retellSecret),"/publish-agent-version/"+encodeURIComponent(String(savedResult.data.retell_agent_id)),"POST",{
+          version:recordingDraftVersion,
+          version_title:"TWIGA recording policy",
+          version_description:"TWIGA business recording preference update"
+        });
+        if(!published.ok) return reply({error:"Recording preference was updated in Retell's draft but version "+recordingDraftVersion+" could not be published."},502);
         recordingAppliedToAgent=true;
       }
       return reply({saved:true,config:savedResult.data,recordingEnabled,recordingNotice,recordingAppliedToAgent});
@@ -238,25 +250,39 @@ Deno.serve(async (req:Request) => {
       if(!check.ok) return reply({error:"Retell key no longer works. Replace it in AI settings."},400);
       const prompt=buildPrompt(biz,profileResult.data,productsResult.data || [],config.inbound_prompt || "",config.outbound_prompt || "") +
         "\\n\\nCALL RECORDING POLICY: The current recording preference and exact notice arrive in this call's fresh TWIGA business context. If recordingEnabled is true, announce recordingNotice immediately and request consent before discussing the enquiry. If recordingEnabled is false, do not claim the call is recorded. Never invent consent.";
-      const requested=String(config.retell_model || "gpt-6-luna");
-      const llmBody={
-        model:requested,start_speaker:"agent",
-        begin_message:"Hello, thank you for contacting "+biz.name+". How may I help you today?",
-        general_prompt:prompt,model_temperature:0.1,begin_after_user_silence_ms:1200
-      };
-      const actual=requested;
-      const existingLlmId=String(config.retell_llm_id || "");
-      const llm=existingLlmId
-        ? await retell(String(secret),"/update-retell-llm/"+encodeURIComponent(existingLlmId),"PATCH",llmBody)
-        : await retell(String(secret),"/create-retell-llm","POST",llmBody);
-      const llmId=existingLlmId || String(llm.data.llm_id || "");
-      if(!llm.ok || !llmId) {
-        return reply({error:"Retell could not save the selected language model ("+requested+"): "+(llm.message || "No LLM id returned")+". Choose another model only if you approve its different price."},502);
+      const existingAgentId=String(config.retell_agent_id || "");
+      let currentAgent:Row={};
+      let existingEngine:Row={};
+      if(existingAgentId) {
+        const current=await retell(String(secret),"/get-agent/"+encodeURIComponent(existingAgentId));
+        if(!current.ok) return reply({error:"Could not retrieve the linked Retell agent before updating it: "+current.message},404);
+        currentAgent=current.data || {};
+        existingEngine=currentAgent.response_engine || {};
       }
-      const agentBody={
-        agent_name:("TWIGA - "+biz.name).slice(0,120),
-        response_engine:{type:"retell-llm",llm_id:llmId},
-        voice_id:config.retell_voice_id || "retell-Willa",
+      const engineType=String(existingEngine.type || "");
+      // Preserve existing conversation-flow/custom-LLM agents. Replacing their
+      // response engine would silently destroy the user's existing call flow.
+      const preserveExistingEngine=!!existingAgentId && ["conversation-flow","custom-llm"].includes(engineType);
+      const requested=String(config.retell_model || "gpt-6-luna");
+      let llmId="";
+      if(!preserveExistingEngine) {
+        const llmBody={
+          model:requested,start_speaker:"agent",
+          begin_message:"Hello, thank you for contacting "+biz.name+". How may I help you today?",
+          general_prompt:prompt,model_temperature:0.1,begin_after_user_silence_ms:1200
+        };
+        const existingLlmId=String(config.retell_llm_id || (engineType==="retell-llm" ? existingEngine.llm_id || "" : ""));
+        const llm=existingLlmId
+          ? await retell(String(secret),"/update-retell-llm/"+encodeURIComponent(existingLlmId),"PATCH",llmBody)
+          : await retell(String(secret),"/create-retell-llm","POST",llmBody);
+        llmId=existingLlmId || String(llm.data.llm_id || "");
+        if(!llm.ok || !llmId) {
+          return reply({error:"Retell could not save the selected language model ("+requested+"): "+(llm.message || "No LLM id returned")+". Choose another model only if you approve its different price."},502);
+        }
+      }
+      const agentBody:Row={
+        agent_name:existingAgentId ? String(currentAgent.agent_name || ("TWIGA - "+biz.name)).slice(0,120) : ("TWIGA - "+biz.name).slice(0,120),
+        voice_id:config.retell_voice_id || currentAgent.voice_id || "retell-Willa",
         voice_model:config.retell_voice_id === "retell-Willa" ? null : (config.retell_voice_model || null),
         language:["en-GB","sw-KE"],voice_emotion:"calm",
         ambient_sound:"call-center",ambient_sound_volume:Number(config.retell_ambient_sound_volume ?? 0.12),
@@ -283,26 +309,42 @@ Deno.serve(async (req:Request) => {
           {type:"string",name:"order_request",description:"Products, quantities and preferences; this is not a confirmed order."}
         ]
       };
-      const existingAgentId=String(config.retell_agent_id || "");
+      if(!preserveExistingEngine) agentBody.response_engine={type:"retell-llm",llm_id:llmId};
       const agent=existingAgentId
         ? await retell(String(secret),"/update-agent/"+encodeURIComponent(existingAgentId),"PATCH",agentBody)
         : await retell(String(secret),"/create-agent","POST",agentBody);
       const agentId=existingAgentId || String(agent.data.agent_id || "");
       if(!agent.ok || !agentId) return reply({error:"Retell could not save the voice agent: "+(agent.message || "No agent id returned")},502);
-      const published=await retell(String(secret),"/publish-agent","POST",{agent_id:agentId});
-      if(!published.ok) return reply({error:"Agent draft was saved but Retell did not publish it. Review the draft in Retell before retrying.",agentCreated:!existingAgentId,agentId},502);
+      let draftVersion=Number(agent.data.version);
+      if(!Number.isInteger(draftVersion) || draftVersion<0) {
+        const latest=await retell(String(secret),"/get-agent/"+encodeURIComponent(agentId));
+        if(!latest.ok) return reply({error:"Retell saved the agent draft but its version could not be read for publishing."},502);
+        draftVersion=Number(latest.data.version);
+      }
+      if(!Number.isInteger(draftVersion) || draftVersion<0)
+        return reply({error:"Retell saved the agent draft but did not return a valid draft version."},502);
+      const published=await retell(String(secret),"/publish-agent-version/"+encodeURIComponent(agentId),"POST",{
+        version:draftVersion,
+        version_title:"TWIGA "+biz.name,
+        version_description:"TWIGA business phone bridge configuration"
+      });
+      if(!published.ok) return reply({error:"Agent draft was saved but Retell did not publish version "+draftVersion+". Review the draft in Retell before retrying.",agentCreated:!existingAgentId,agentId},502);
       const {data:saved,error:saveError}=await admin.from("twiga_business_voice_configs").update({
-        provider:"retell",retell_agent_id:agentId,retell_llm_id:llmId,
-        retell_model:actual,last_provisioned_at:new Date().toISOString(),updated_at:new Date().toISOString()
+        provider:"retell",retell_agent_id:agentId,retell_llm_id:llmId || null,
+        retell_model:requested,last_provisioned_at:new Date().toISOString(),updated_at:new Date().toISOString()
       }).eq("business_id",businessId)
         .select("business_id,provider,retell_agent_id,retell_llm_id,retell_voice_id,retell_voice_model,retell_model,retell_language_codes,retell_ambient_sound,retell_ambient_sound_volume,last_provisioned_at").single();
       if(saveError) throw saveError;
       return reply({
         provisioned:true,published:true,updated:!!existingAgentId,config:saved,
-        modelNotice:"Retell was configured with the exact model you selected; TWIGA does not silently switch to a different price tier.",
-        message:existingAgentId
-          ?"The existing business-specific Retell receptionist was updated and published. Vapi remains available."
-          :"The business-specific Retell receptionist was created and published. Vapi remains available."
+        modelNotice:preserveExistingEngine
+          ?"The existing "+engineType+" response engine was preserved. The selected GPT model and generated TWIGA prompt were not applied to that existing flow."
+          :"Retell was configured with the exact model you selected; TWIGA does not silently switch to a different price tier.",
+        message:preserveExistingEngine
+          ?"The existing Retell agent was updated and published without replacing its "+engineType+" response engine. Review its conversation flow separately to add business-specific products and services."
+          :existingAgentId
+            ?"The existing Retell agent was updated and published. Vapi remains available."
+            :"The business-specific Retell receptionist was created and published. Vapi remains available."
       });
     }
 
