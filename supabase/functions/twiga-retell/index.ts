@@ -78,18 +78,28 @@ Deno.serve(async (req:Request) => {
       return reply({error:"Only the business owner, business admin or TWIGA platform admin can change AI settings."},403);
 
     if(action==="get_config") {
-      const [configResult,keyResult,recordingResult]=await Promise.all([
+      const [configResult,keyResult,recordingResult,lineResult]=await Promise.all([
         admin.from("twiga_business_voice_configs").select("*").eq("business_id",businessId).maybeSingle(),
         admin.from("twiga_provider_secret_refs").select("secret_last4,updated_at").eq("business_id",businessId).eq("provider","retell").maybeSingle(),
-        admin.from("twiga_business_settings").select("call_recording_enabled,recording_notice").eq("business_id",businessId).maybeSingle()
+        admin.from("twiga_business_settings").select("call_recording_enabled,recording_notice").eq("business_id",businessId).maybeSingle(),
+        admin.from("ai_lines").select("number").eq("business_id",businessId).maybeSingle()
       ]);
       return reply({
         config:configResult.data || {business_id:businessId,provider:"vapi",retell_voice_id:"retell-Willa",retell_voice_model:null,retell_model:"gpt-6-luna",retell_language_codes:["en-GB","sw-KE"],retell_ambient_sound:"call-center",retell_ambient_sound_volume:0.12},
         keyConfigured:!!keyResult.data,keyLast4:keyResult.data?.secret_last4 || "",keyUpdatedAt:keyResult.data?.updated_at || null,
         recordingEnabled:recordingResult.data?.call_recording_enabled===true,
-        recordingNotice:recordingResult.data?.recording_notice || "This call may be recorded to help us serve you.",
+        recordingNotice:recordingResult.data?.recording_notice || "This call may be recorded to help you.",
+        aiBridgeNumber:lineResult.data?.number || "",
         canManage,isPlatformAdmin
       });
+    }
+
+    if(action==="list_phone_numbers") {
+      const {data:secret,error:secretError}=await admin.rpc("twiga_get_provider_secret",{p_business_id:businessId,p_provider:"retell"});
+      if(secretError || !secret) return reply({error:"Connect a valid Retell key for this business first."},400);
+      const result=await retell(String(secret),"/v2/list-phone-numbers","GET");
+      if(!result.ok) return reply({error:"Could not list Retell phone numbers: "+result.message},502);
+      return reply({phoneNumbers:result.data.phone_numbers || result.data.items || [],hasMore:!!result.data.has_more});
     }
 
     if(action==="save_key") {
@@ -134,6 +144,24 @@ Deno.serve(async (req:Request) => {
         updated_at:new Date().toISOString()
       },{onConflict:"business_id"});
       if(recordingSaveError) throw recordingSaveError;
+      if(Object.prototype.hasOwnProperty.call(body,"bridgeNumber")) {
+        const bridgeNumber=String(body.bridgeNumber || "").trim();
+        if(bridgeNumber && !/^\\+[1-9][0-9]{6,14}$/.test(bridgeNumber))
+          return reply({error:"The AI bridge number must be in international E.164 format, for example +2547XXXXXXXX."},400);
+        if(bridgeNumber) {
+          const {data:claimed,error:claimError}=await admin.from("ai_lines").select("business_id").eq("number",bridgeNumber).maybeSingle();
+          if(claimError) throw claimError;
+          if(claimed && claimed.business_id!==businessId)
+            return reply({error:"That AI number is already assigned to another business."},409);
+          const {error:deleteError}=await admin.from("ai_lines").delete().eq("business_id",businessId);
+          if(deleteError) throw deleteError;
+          const {error:lineError}=await admin.from("ai_lines").insert({number:bridgeNumber,business_id:businessId});
+          if(lineError) throw lineError;
+        } else {
+          const {error:deleteError}=await admin.from("ai_lines").delete().eq("business_id",businessId);
+          if(deleteError) throw deleteError;
+        }
+      }
       let recordingAppliedToAgent=false;
       if(config.provider==="retell" && savedResult.data?.retell_agent_id) {
         const {data:retellSecret}=await admin.rpc("twiga_get_provider_secret",{p_business_id:businessId,p_provider:"retell"});
