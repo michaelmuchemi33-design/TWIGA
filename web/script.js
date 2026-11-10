@@ -243,10 +243,13 @@ import { inject } from "@vercel/analytics";
   // endpoint reads the current release metadata, so new Android builds update the
   // website's version and file size without a separate website edit or redeploy.
   const apkDownload = $("#apkDownloadHero");
+  const footerApkDownload = $("#apkDownload");
   const apkVersion = $("#apkVersionHero");
+  const footerApkVersion = $("#apkVersion");
   const apkNote = $("#apkDownloadNote");
   const latestApkFallback = "https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/twiga-business-assistant-latest/twiga-business-assistant.apk";
   if (apkDownload) apkDownload.href = latestApkFallback;
+  if (footerApkDownload) footerApkDownload.href = latestApkFallback;
 
   fetch("/api/latest-apk", { headers: { Accept: "application/json" }, cache: "no-store" })
     .then(response => {
@@ -256,6 +259,7 @@ import { inject } from "@vercel/analytics";
     .then(app => {
       if (!app.available || !app.downloadUrl) throw new Error("No published APK is available");
       if (apkDownload) apkDownload.href = app.downloadUrl;
+      if (footerApkDownload) footerApkDownload.href = app.downloadUrl;
       const sizeMb = Math.max(1, Math.round((Number(app.sizeBytes) || 0) / 1048576));
       const versionLabel = [
         app.versionName ? "v" + app.versionName : "Latest",
@@ -263,6 +267,7 @@ import { inject } from "@vercel/analytics";
         "Android " + (app.minimumAndroidVersion || "7.0") + "+"
       ].join(" · ");
       if (apkVersion) apkVersion.textContent = versionLabel;
+      if (footerApkVersion) footerApkVersion.textContent = " · v" + (app.versionName || "latest");
       if (apkNote) {
         const updated = app.updatedAt ? new Date(app.updatedAt) : null;
         const date = updated && !Number.isNaN(updated.getTime())
@@ -277,6 +282,7 @@ import { inject } from "@vercel/analytics";
     })
     .catch(() => {
       if (apkVersion) apkVersion.textContent = "Latest APK · Android 7.0+";
+      if (footerApkVersion) footerApkVersion.textContent = " · Latest";
       if (apkNote) apkNote.textContent = "The stable latest-release download address remains available while version details refresh.";
     });
 
