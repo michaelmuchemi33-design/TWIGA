@@ -47,3 +47,12 @@ Vercel settings: root `web`, framework Vite, install `npm install`, build `npm r
 - `api/sautikit/voice.js` — returns configured audio stream instructions when `TWIGA_AUDIO_BRIDGE_URL` is set.
 
 These existing server routes are separate from the public browser demo. Keep their private environment variables on the server only.
+
+
+## Current Android APK download
+
+The Android download strip on the homepage points to the TWIGA Business Assistant release, not the older Unity AI Receptionist APK. The page calls the same-origin Vercel endpoint `/api/latest-apk`; that endpoint reads the latest `twiga-business-assistant-latest` GitHub Release, then returns the real asset URL, version, file size, minimum Android version and checksum metadata.
+
+The Android repository's `TWIGA Business Assistant Android` workflow publishes or replaces the APK and `version.json` after each successful push build on `feature/twiga-business-assistant-app`. The website therefore picks up new APK builds automatically; no website code edit is needed for each app build. Vercel's API cache is set to five minutes with stale-while-revalidate.
+
+The current APK is the Business Assistant build (package `co.ke.twiga.businessassistant`), supports Android 7.0 / API 24 and newer, and includes the WhatsApp workspace. A debug-signed APK can be installed fresh, but Android requires a consistent signing certificate for seamless in-place upgrades. Configure a permanent release keystore and sign every production APK with it before treating the APK channel as a production update channel; never commit the keystore or its password to this public repository.
