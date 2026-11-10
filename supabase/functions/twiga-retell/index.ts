@@ -235,9 +235,10 @@ Deno.serve(async (req:Request) => {
     if(action==="provision_agent") {
       const {data:secret,error:secretError}=await admin.rpc("twiga_get_provider_secret",{p_business_id:businessId,p_provider:"retell"});
       if(secretError || !secret) return reply({error:"Connect a valid Retell key for this business first."},400);
-      const [bizResult,profileResult,productsResult,configResult,recordingResult]=await Promise.all([
+      const [bizResult,profileResult,businessAiResult,productsResult,configResult,recordingResult]=await Promise.all([
         admin.from("businesses").select("id,name,business_type,created_by").eq("id",businessId).single(),
         admin.from("twiga_business_profiles").select("*").eq("business_id",businessId).maybeSingle(),
+        admin.from("business_ai").select("prompt,greeting,auto_reply,faq,rules").eq("business_id",businessId).maybeSingle(),
         admin.from("twiga_products").select("name,description,price,currency,stock_quantity").eq("business_id",businessId).eq("is_active",true).order("name").limit(80),
         admin.from("twiga_business_voice_configs").select("*").eq("business_id",businessId).maybeSingle(),
         admin.from("twiga_business_settings").select("call_recording_enabled,recording_notice").eq("business_id",businessId).maybeSingle()
@@ -248,7 +249,17 @@ Deno.serve(async (req:Request) => {
       if(!config) return reply({error:"Save the voice settings before provisioning."},400);
       const check=await retell(String(secret),"/get-concurrency");
       if(!check.ok) return reply({error:"Retell key no longer works. Replace it in AI settings."},400);
-      const prompt=buildPrompt(biz,profileResult.data,productsResult.data || [],config.inbound_prompt || "",config.outbound_prompt || "") +
+      const appAi=businessAiResult.data || {};
+      const profile=Object.assign({},profileResult.data || {},{
+        assistant_instructions:[
+          profileResult.data?.assistant_instructions || "",
+          appAi.prompt || "",
+          appAi.faq ? "Business FAQs:\\n"+appAi.faq : "",
+          appAi.rules ? "Business rules:\\n"+appAi.rules : "",
+          appAi.auto_reply ? "Missed-call follow-up message:\\n"+appAi.auto_reply : ""
+        ].filter(Boolean).join("\\n\\n").slice(0,20000)
+      });
+      const prompt=buildPrompt(biz,profile,productsResult.data || [],config.inbound_prompt || "",config.outbound_prompt || "") +
         "\\n\\nCALL RECORDING POLICY: The current recording preference and exact notice arrive in this call's fresh TWIGA business context. If recordingEnabled is true, announce recordingNotice immediately and request consent before discussing the enquiry. If recordingEnabled is false, do not claim the call is recorded. Never invent consent.";
       const existingAgentId=String(config.retell_agent_id || "");
       let currentAgent:Row={};
@@ -268,7 +279,7 @@ Deno.serve(async (req:Request) => {
       if(!preserveExistingEngine) {
         const llmBody={
           model:requested,start_speaker:"agent",
-          begin_message:"Hello, thank you for contacting "+biz.name+". How may I help you today?",
+          begin_message:String(appAi.greeting || "").trim() || ("Hello, thank you for contacting "+biz.name+". How may I help you today."),
           general_prompt:prompt,model_temperature:0.1,begin_after_user_silence_ms:1200
         };
         const existingLlmId=String(config.retell_llm_id || (engineType==="retell-llm" ? existingEngine.llm_id || "" : ""));
