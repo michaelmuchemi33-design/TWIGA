@@ -223,11 +223,11 @@ Deno.serve(async (req:Request) => {
       const agent=found.data || {};
       const engine=agent.response_engine || {};
       const llmId=String(engine.llm_id || agent.llm_id || "");
-      const {data:existing}=await admin.from("twiga_business_voice_configs").select("business_id").eq("business_id",businessId).maybeSingle();
-      const update={provider:"retell",retell_agent_id:agentId,retell_llm_id:llmId || null,retell_voice_id:String(agent.voice_id || "retell-Willa"),retell_voice_model:agent.voice_model || null,updated_by:user.id,updated_at:new Date().toISOString()};
+      const {data:existing}=await admin.from("twiga_business_voice_configs").select("business_id,provider").eq("business_id",businessId).maybeSingle();
+      const update={retell_agent_id:agentId,retell_llm_id:llmId || null,retell_voice_id:String(agent.voice_id || "retell-Willa"),retell_voice_model:agent.voice_model || null,updated_by:user.id,updated_at:new Date().toISOString()};
       const saved=existing
         ? await admin.from("twiga_business_voice_configs").update(update).eq("business_id",businessId).select("business_id,provider,retell_agent_id,retell_llm_id,retell_voice_id,retell_voice_model,retell_model,retell_language_codes,inbound_prompt,outbound_prompt").single()
-        : await admin.from("twiga_business_voice_configs").insert({...update,business_id:businessId}).select("business_id,provider,retell_agent_id,retell_llm_id,retell_voice_id,retell_voice_model,retell_model,retell_language_codes,inbound_prompt,outbound_prompt").single();
+        : await admin.from("twiga_business_voice_configs").insert({...update,business_id:businessId,provider:"vapi"}).select("business_id,provider,retell_agent_id,retell_llm_id,retell_voice_id,retell_voice_model,retell_model,retell_language_codes,inbound_prompt,outbound_prompt").single();
       if(saved.error) throw saved.error;
       return reply({linked:true,config:saved.data,agentName:agent.agent_name || null,agentId});
     }
