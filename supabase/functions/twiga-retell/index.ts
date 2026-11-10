@@ -317,7 +317,10 @@ Deno.serve(async (req:Request) => {
           {type:"string",name:"appointment_start_iso",description:"If the caller clearly agrees on an exact date and time, provide ISO 8601 with Africa/Nairobi offset +03:00, such as 2026-11-24T14:00:00+03:00. Leave empty if unclear or incomplete; never guess."},
           {type:"number",name:"appointment_duration_minutes",description:"Requested appointment length in minutes if the caller or business profile specifies it; otherwise leave empty."},
           {type:"string",name:"appointment_service",description:"Specific service or appointment reason requested."},
-          {type:"string",name:"order_request",description:"Products, quantities and preferences; this is not a confirmed order."}
+          {type:"string",name:"order_request",description:"Products, quantities and preferences; this is not a confirmed order."},
+          {type:"number",name:"order_total",description:"Order total only when item prices and quantities are clear from the business catalogue; otherwise 0 and mark the order for owner confirmation."},
+          {type:"string",name:"order_currency",description:"Currency code for the business order total, normally KES for a Kenyan business."},
+          {type:"string",name:"order_items_json",description:"JSON array of ordered items with name, quantity, unit_price and line_total. Return an empty array if details are unclear."}
         ]
       };
       if(!preserveExistingEngine) agentBody.response_engine={type:"retell-llm",llm_id:llmId};
