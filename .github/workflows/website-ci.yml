@@ -49,9 +49,11 @@ jobs:
             import fs from "node:fs";
             const data = JSON.parse(fs.readFileSync("/tmp/twiga-apk.json", "utf8"));
             if (data.available !== true) throw new Error("Latest APK endpoint says no APK is available");
-            if (!data.downloadUrl?.includes("/twiga-business-assistant-latest/twiga-business-assistant.apk")) throw new Error("Wrong APK download URL");
-            if (!(Number(data.sizeBytes) > 70000000)) throw new Error("APK size is missing or unexpectedly small");
+            if (!data.downloadUrl?.includes("/latest-apk/twiga.apk")) throw new Error("Wrong TWIGA APK download URL");
+            if (!(Number(data.sizeBytes) > 1000000)) throw new Error("APK size is missing or unexpectedly small");
             if (!data.versionName || !(Number(data.versionCode) > 0)) throw new Error("APK version metadata is incomplete");
+            if (data.appId !== "com.unity.receptionist") throw new Error("APK package metadata does not match the upgrade-compatible Android application ID");
             if (data.minimumAndroidVersion !== "7.0") throw new Error("Unexpected minimum Android version");
+            if (!/^[a-f0-9]{64}$/i.test(data.sha256 || "")) throw new Error("APK SHA-256 metadata is missing");
             console.log(JSON.stringify({version:data.versionName,versionCode:data.versionCode,sizeBytes:data.sizeBytes,minimumAndroid:data.minimumAndroidVersion,downloadUrl:data.downloadUrl},null,2));
           '
