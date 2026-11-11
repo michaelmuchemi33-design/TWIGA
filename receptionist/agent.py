@@ -74,9 +74,7 @@ def _build_realtime_model_kwargs(voice_config, api_key: str | None) -> dict:
 
     if voice_config.reasoning_effort is not None and "reasoning" in supported:
         try:
-            from livekit.plugins.openai.realtime.realtime_model import (
-                RealtimeReasoning,
-            )
+            from livekit.plugins.openai.realtime import RealtimeReasoning
 
             kwargs["reasoning"] = RealtimeReasoning(
                 effort=voice_config.reasoning_effort
