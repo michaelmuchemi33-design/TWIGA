@@ -1,6 +1,6 @@
 const GITHUB_RELEASE_API =
-  "https://api.github.com/repos/michaelmuchemi33-design/twiga-android-app/releases/tags/twiga-business-assistant-latest";
-const APK_ASSET_NAME = "twiga-business-assistant.apk";
+  "https://api.github.com/repos/michaelmuchemi33-design/twiga-android-app/releases/tags/latest-apk";
+const APK_ASSET_NAME = "twiga.apk";
 const VERSION_ASSET_NAME = "version.json";
 
 export default async function handler(req, res) {
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
     const downloadUrl = new URL(apk.browser_download_url);
     if (downloadUrl.hostname !== "github.com" ||
-        !downloadUrl.pathname.includes("/releases/download/twiga-business-assistant-latest/")) {
+        !downloadUrl.pathname.includes("/releases/download/latest-apk/")) {
       return res.status(502).json({ available: false, error: "The download address could not be verified." });
     }
 
@@ -60,7 +60,7 @@ export default async function handler(req, res) {
 
     const payload = {
       available: true,
-      appId: "co.ke.twiga.businessassistant",
+      appId: "com.unity.receptionist",
       versionName: String(metadata.versionName || release.name || "Latest"),
       versionCode: Number(metadata.versionCode) || null,
       sizeBytes: apk.size,
