@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     const payload = {
       available: true,
       appId: "com.unity.receptionist",
-      versionName: String(metadata.versionName || metadata.appVersionName || release.name || "Latest"),
+      versionName: String(metadata.versionName || metadata.appVersionName || "TWIGA"),
       // Legacy release manifests store the monotonically increasing CI build number.
       versionCode: Number(metadata.versionCode ?? metadata.build) || null,
       sizeBytes: apk.size,
