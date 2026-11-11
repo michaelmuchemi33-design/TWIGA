@@ -205,39 +205,7 @@ import { inject } from "@vercel/analytics";
     showToast(muted ? "Microphone muted." : "Microphone is on.");
   }
 
-  // Demo requests are stored in the TWIGA Supabase database, not sent through a visitor's mail app.
-  const demoForm = $("#demoRequest");
-  const demoDate = $("#demoDate");
-  if (demoDate) {
-    const today = new Date();
-    const localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-    demoDate.min = localToday;
-    demoDate.value = localToday;
-  }
-  demoForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const values = Object.fromEntries(new FormData(demoForm).entries());
-    const submit = demoForm.querySelector('button[type="submit"]');
-    const statusLine = $("#demoFormStatus");
-    if (submit) { submit.disabled = true; submit.textContent = "Sending request…"; }
-    statusLine.textContent = "Saving your demo request securely…";
-    try {
-      const response = await fetch("/api/demo-booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values)
-      });
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) throw new Error(result.error || "Please try again.");
-      demoForm.reset();
-      statusLine.textContent = result.message || "Your request has been received. The TWIGA team will contact you.";
-      showToast("Demo request received.");
-    } catch (error) {
-      statusLine.textContent = error?.message || "We couldn't save your request. Please try again.";
-    } finally {
-      if (submit) { submit.disabled = false; submit.innerHTML = 'Request my free demo <span aria-hidden="true">↗</span>'; }
-    }
-  });
+  // Demo booking has been removed; visitors create a TWIGA account directly.
 
   // The download address is a stable GitHub Release asset. This same-origin
   // endpoint reads the current release metadata, so new Android builds update the
@@ -247,7 +215,7 @@ import { inject } from "@vercel/analytics";
   const apkVersion = $("#apkVersionHero");
   const footerApkVersion = $("#apkVersion");
   const apkNote = $("#apkDownloadNote");
-  const latestApkFallback = "https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/twiga-business-assistant-latest/twiga-business-assistant.apk";
+  const latestApkFallback = "https://github.com/michaelmuchemi33-design/twiga-android-app/releases/download/latest-apk/twiga.apk";
   if (apkDownload) apkDownload.href = latestApkFallback;
   if (footerApkDownload) footerApkDownload.href = latestApkFallback;
 
