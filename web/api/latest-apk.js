@@ -61,10 +61,11 @@ export default async function handler(req, res) {
     const payload = {
       available: true,
       appId: "com.unity.receptionist",
-      versionName: String(metadata.versionName || release.name || "Latest"),
-      versionCode: Number(metadata.versionCode) || null,
+      versionName: String(metadata.versionName || metadata.appVersionName || release.name || "Latest"),
+      // Legacy release manifests store the monotonically increasing CI build number.
+      versionCode: Number(metadata.versionCode ?? metadata.build) || null,
       sizeBytes: apk.size,
-      sha256: typeof metadata.sha256 === "string" ? metadata.sha256 : null,
+      sha256: typeof metadata.sha256 === "string" ? metadata.sha256 : (typeof apk.digest === "string" && apk.digest.startsWith("sha256:") ? apk.digest.slice(7) : null),
       minimumAndroidVersion: String(metadata.minimumAndroidVersion || "7.0"),
       updatedAt: metadata.builtAt || apk.updated_at || release.published_at || null,
       downloadUrl: downloadUrl.href
