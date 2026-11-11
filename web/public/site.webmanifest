@@ -8,10 +8,10 @@
   "theme_color": "#F47721",
   "icons": [
     {
-      "src": "/twiga-mark.svg",
+      "src": "https://raw.githubusercontent.com/michaelmuchemi33-design/twiga-android-app/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
+      "type": "image/webp",
+      "purpose": "any maskable"
     }
   ]
 }
