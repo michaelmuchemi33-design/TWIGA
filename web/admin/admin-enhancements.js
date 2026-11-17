@@ -127,7 +127,7 @@ async function openNumberAssign(){
   clients=overview.clients||[];
   const select=m.querySelector("#twiga-number-business");
   select.innerHTML='<option value="">Choose a business</option>'+clients.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+' · '+esc(c.ownerEmail||"No owner email")+'</option>').join("");
-  const list=m.querySelector("#twiga-number-list"),note=m.querySelector("#twiga-number-note"),assign=m.querySelector("#twiga-assign-number");
+  const list=m.querySelector("#twiga-number-list"),noteEl=m.querySelector("#twiga-number-note"),assign=m.querySelector("#twiga-assign-number");
   const numbers=inventory.numbers||[];let selectedNumber="";
   function render(){
    list.innerHTML=numbers.length?numbers.map(n=>{
@@ -137,7 +137,7 @@ async function openNumberAssign(){
    }).join(""):'<p class="muted">No SautiKit numbers were returned. Connect the shared SautiKit key and refresh.</p>';
    list.querySelectorAll("[data-number]:not([disabled])").forEach(b=>b.onclick=()=>{selectedNumber=b.dataset.number;list.querySelectorAll("[data-number]").forEach(x=>x.style.outline=x.dataset.number===selectedNumber?'2px solid #f47721':'none');assign.disabled=!select.value;});
    assign.disabled=!selectedNumber||!select.value;
-   note=numbers.length&&!numbers.some(n=>!n.assignedBusinessId&&String(n.status).toLowerCase()==="active")?"There are no unassigned active numbers right now. The existing number(s) are already assigned; add or claim another number in SautiKit, then refresh. No number has been purchased.": "Only active numbers that are not assigned to another TWIGA business can be issued.";
+   noteEl.textContent=numbers.length&&!numbers.some(n=>!n.assignedBusinessId&&String(n.status).toLowerCase()==="active")?"There are no unassigned active numbers right now. The existing number(s) are already assigned; add or claim another number in SautiKit, then refresh. No number has been purchased.": "Only active numbers that are not assigned to another TWIGA business can be issued.";
   }
   render();
   select.onchange=()=>{assign.disabled=!selectedNumber||!select.value};
