@@ -139,7 +139,7 @@ async function openNumberAssign(){
    list.innerHTML=numbers.length?numbers.map(n=>{
     const assigned=!!n.assignedBusinessId,active=String(n.status).toLowerCase()==="active";
     const disabled=assigned||!active;
-    return '<button type="button" class="ticket" data-number="'+esc(n.id)+'" '+(disabled?'disabled style="opacity:.58;cursor:not-allowed"':'')+'><strong>'+esc(n.phoneNumber||n.id)+'</strong><small>'+esc(n.country||"")+' · '+esc(n.status)+' · '+esc((n.capabilities||[]).join(", "))+'</small><small>'+(assigned?'Already assigned to '+esc(n.assignedLineNumber||"a business"):'Available to assign')+'</small></button>';
+    return '<button type="button" class="ticket" data-number="'+esc(n.id)+'" '+(disabled?'disabled style="opacity:.58;cursor:not-allowed"':'')+'><strong>'+esc(n.phoneNumber||n.id)+'</strong><small>'+esc(n.country||"")+' · '+esc(n.status)+' · '+esc((n.capabilities||[]).join(", "))+'</small><small>'+(assigned?'Already assigned to '+esc(n.assignedBusinessName||n.assignedLineNumber||"a business"):'Available to assign')+'</small></button>';
    }).join(""):'<p class="muted">No SautiKit numbers were returned. Connect the shared SautiKit key and refresh.</p>';
    list.querySelectorAll("[data-number]:not([disabled])").forEach(b=>b.onclick=()=>{selectedNumber=b.dataset.number;list.querySelectorAll("[data-number]").forEach(x=>x.style.outline=x.dataset.number===selectedNumber?'2px solid #f47721':'none');assign.disabled=!select.value;});
    assign.disabled=!selectedNumber||!select.value;
