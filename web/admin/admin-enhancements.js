@@ -119,11 +119,17 @@ async function openSautiKit(){
 }
 skButton.onclick=()=>void openSautiKit();
 
+async function sautiCall(action,payload={}) {
+ const {data,error}=await sb.functions.invoke("twiga-sautikit",{body:{action,...payload}});
+ if(error)throw error;
+ if(data?.error)throw new Error(data.error);
+ return data;
+}
 const numberButton=document.createElement("button");numberButton.className="secondary";numberButton.id="twiga-open-numbers";numberButton.textContent="Issue phone number";tools.appendChild(numberButton);
 async function openNumberAssign(){
  const m=show("Issue a SautiKit phone number",'<p class="muted">Assign an existing, active number from the connected SautiKit workspace. This does not buy a number or switch on call routing.</p><div id="twiga-error" class="error"></div><label>Customer business</label><select id="twiga-number-business"><option>Loading businesses…</option></select><label>Available SautiKit numbers</label><div id="twiga-number-list" style="display:grid;gap:8px;margin-top:8px"></div><p id="twiga-number-note" class="muted" style="margin-top:12px"></p><div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="action" id="twiga-assign-number" disabled>Assign selected number</button></div>');
  try{
-  const [overview,inventory]=await Promise.all([call("overview"),call("admin_list_numbers")]);
+  const [overview,inventory]=await Promise.all([call("overview"),sautiCall("admin_list_numbers")]);
   clients=overview.clients||[];
   const select=m.querySelector("#twiga-number-business");
   select.innerHTML='<option value="">Choose a business</option>'+clients.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+' · '+esc(c.ownerEmail||"No owner email")+'</option>').join("");
@@ -147,7 +153,7 @@ async function openNumberAssign(){
    if(!confirm("Assign "+(number?.phoneNumber||selectedNumber)+" to "+(clients.find(c=>c.id===select.value)?.name||"this business")+"?"))return;
    assign.disabled=true;assign.textContent="Assigning…";
    try{
-    const result=await call("admin_assign_number",{businessId:select.value,numberId:selectedNumber});
+    const result=await sautiCall("admin_assign_number",{businessId:select.value,numberId:selectedNumber});
     m.querySelector(".body").innerHTML='<div style="padding:22px 4px"><h2 style="font-size:22px;font-weight:800;color:#166534">Number assigned</h2><p style="margin-top:10px"><b>'+esc(result.phoneLine?.line_number||number?.phoneNumber||"")+'</b> is now assigned to '+esc(result.business?.name||"the selected business")+'.</p><p class="muted" style="margin-top:8px">Call routing stays off until the business receptionist is configured and verified.</p></div>';
    }catch(err){errorBox(err);assign.disabled=false;assign.textContent="Assign selected number"}
   };
