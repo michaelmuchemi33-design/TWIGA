@@ -1,7 +1,7 @@
 const ALLOWED_ORIGINS = new Set(["https://twiga.co.ke", "https://www.twiga.co.ke"]);
 const clean = (value, max) => String(value ?? "").trim().slice(0, max);
 function normalizeKenyanPhone(value) {
-  let digits = String(value ?? "").replace(/\\D/g, "");
+  let digits = String(value ?? "").replace(/\D/g, "");
   if (digits.startsWith("0")) digits = "254" + digits.slice(1);
   else if (digits.startsWith("7") || digits.startsWith("1")) digits = "254" + digits;
   return digits;
@@ -39,14 +39,14 @@ export async function onRequest({request, env}) {
     const honeypot = clean(body.company_website, 200);
     const parsedDate = new Date(preferredDate + "T00:00:00Z");
     const today = new Date(new Date().toISOString().slice(0, 10) + "T00:00:00Z");
-    const validDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(preferredDate) &&
+    const validDate = /^\d{4}-\d{2}-\d{2}$/.test(preferredDate) &&
       !Number.isNaN(parsedDate.getTime()) &&
       parsedDate.toISOString().slice(0, 10) === preferredDate &&
       parsedDate >= today;
     const validTime = ["09:00","10:30","12:00","14:00","15:30"].includes(preferredTime);
     if (fullName.length < 2 || businessName.length < 2 ||
-        !/^254[17]\\d{8}$/.test(phone) ||
-        !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) ||
+        !/^254[17]\d{8}$/.test(phone) ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
         !validDate || !validTime) {
       return response({error:"Please enter your name, business, valid Kenyan phone and email, and choose a future demo date and time."}, 400, origin);
     }
