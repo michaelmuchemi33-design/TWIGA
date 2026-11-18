@@ -137,6 +137,50 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (action === "extend_access_days") {
+      const businessId = String(payload.businessId || "");
+      const days = Number(payload.days);
+      if (!businessId || !Number.isInteger(days) || days < 1 || days > 1000)
+        return reply({ error: "Choose a business and enter between 1 and 1000 days." }, 400);
+      const { data: business, error: businessError } = await admin.from("businesses")
+        .select("id,name,paid_through").eq("id", businessId).maybeSingle();
+      if (businessError) throw businessError;
+      if (!business) return reply({ error: "Business not found." }, 404);
+      const today = new Date();
+      const baseDate = business.paid_through && business.paid_through > today.toISOString().slice(0, 10)
+        ? business.paid_through : today.toISOString().slice(0, 10);
+      const [year, month, day] = baseDate.split("-").map(Number);
+      const paidDate = new Date(Date.UTC(year, month - 1, day + days));
+      const paidThrough = paidDate.toISOString().slice(0, 10);
+      const { data: updatedBusiness, error: updateBusinessError } = await admin.from("businesses")
+        .update({ status: "ACTIVE", paid_through: paidThrough }).eq("id", businessId)
+        .select("id,name,status,paid_through").single();
+      if (updateBusinessError) throw updateBusinessError;
+      const { data: subscription, error: subscriptionError } = await admin.from("twiga_subscriptions")
+        .select("id,current_period_start,current_period_end")
+        .eq("business_id", businessId).order("created_at", { ascending: false }).limit(1).maybeSingle();
+      if (subscriptionError) throw subscriptionError;
+      let periodEnd: string | null = null;
+      if (subscription?.id) {
+        const now = new Date();
+        const priorEnd = subscription.current_period_end ? new Date(subscription.current_period_end) : now;
+        const startFrom = priorEnd > now ? priorEnd : now;
+        const nextEnd = new Date(startFrom.getTime() + days * 86400000);
+        periodEnd = nextEnd.toISOString();
+        const { error: updateSubscriptionError } = await admin.from("twiga_subscriptions")
+          .update({ status: "active", current_period_start: subscription.current_period_start || now.toISOString(),
+            current_period_end: periodEnd, grace_period_ends_at: null, updated_at: now.toISOString() })
+          .eq("id", subscription.id);
+        if (updateSubscriptionError) throw updateSubscriptionError;
+      }
+      await admin.from("twiga_admin_audit_logs").insert({
+        admin_email: user.email || "unknown", action: "business.access_days_added",
+        resource_type: "business", resource_id: businessId,
+        metadata: { days, paid_through: paidThrough, subscription_period_end: periodEnd },
+      });
+      return reply({ saved: true, client: updatedBusiness, daysAdded: days, paidThrough, periodEnd });
+    }
+
     if (action === "set_access") {
       const businessId = String(payload.businessId || "");
       const status = String(payload.status || "").toUpperCase();
