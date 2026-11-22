@@ -5,7 +5,7 @@ const sb=createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoR
 const $=s=>document.querySelector(s);let payload=null;
 function applyAdminTheme(mode){const next=mode==="dark"?"dark":"light";document.documentElement.dataset.theme=next;const toggle=$("#themeToggle"),label=$("#themeModeLabel"),glyph=$("#themeGlyph");if(toggle){toggle.setAttribute("aria-pressed",String(next==="dark"));toggle.setAttribute("aria-label",next==="dark"?"Switch to light mode":"Switch to dark mode");}if(label)label.textContent=next==="dark"?"Light mode":"Dark mode";if(glyph)glyph.textContent=next==="dark"?"☀":"☾";try{localStorage.setItem("twiga_admin_theme",next)}catch{}}
 const savedAdminTheme=(()=>{try{return localStorage.getItem("twiga_admin_theme")}catch{return null}})();
-const preferredAdminTheme=window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light";
+const preferredAdminTheme=typeof window.matchMedia==="function"&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";
 applyAdminTheme(savedAdminTheme==="dark"||savedAdminTheme==="light"?savedAdminTheme:preferredAdminTheme);
 $("#themeToggle")?.addEventListener("click",()=>applyAdminTheme(document.documentElement.dataset.theme==="dark"?"light":"dark"));
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
